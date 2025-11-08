@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/public/Project-Gudline
 
 # next.js
 /.next/
