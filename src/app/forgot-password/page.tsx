@@ -16,7 +16,7 @@ const ForgotPassword = () => {
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-[#ebeff4]">
-      <div className="flex w-full md:w-[900px] h-[600px] shadow-2xl rounded-2xl overflow-hidden bg-white">
+      <div className="flex w-full md:w-[1050px] h-[400px] shadow-2xl rounded-2xl overflow-hidden bg-white">
         <div className="w-1/2 bg-gray-500 flex justify-center items-center">
           <Image
             src={IMAGES.logo}
