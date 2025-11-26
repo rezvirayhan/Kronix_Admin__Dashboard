@@ -1,4 +1,3 @@
-
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -28,7 +27,24 @@ const Navbar = () => {
         />
 
         {open && (
-          <div className="absolute right-0 mt-2 w-40 bg-white text-gray-700 shadow-lg rounded-lg overflow-hidden">
+          <div className="absolute right-0 mt-2 w-64 bg-white text-gray-700 shadow-lg rounded-lg overflow-hidden">
+            <div className="block w-full text-left px-4 py-2 bg-[#E5F4FB]">
+              <div className="flex items-center ">
+                <div>
+                  <FaRegCircleUser
+                    size={28}
+                    className="cursor-pointer text-[#019ee2]"
+                  />
+                </div>
+                <div className="ml-4">
+                  <h2>Rezvi Rayhan</h2>
+                  <h2 className="text-[#019ee2] font-semibold text-[12px]">
+                    Administattors
+                  </h2>
+                </div>
+              </div>
+            </div>
+
             <button
               className="block w-full text-left px-4 py-2 hover:bg-gray-100"
               onClick={goToProfile}

@@ -7,16 +7,15 @@ import DynamicTable from "@/components/DynamicTable";
 import DynamicPagination from "@/components/DynamicPagination";
 import ReusableSearch from "@/components/ReusableSearch";
 import ReusableSort from "@/components/ReusableSort";
-import { IColumn } from "@/types/IColumn";
-import { FaPlus } from "react-icons/fa";
 import HeaderCard from "@/components/HeaderCard";
-import AdminModal from "@/components/AdminModal";
-import { IUser } from "@/types/IUser";
+import { IColumn } from "@/types/IColumn";
+import { IPortfolio } from "@/types/IPortfolio";
+import { MdPhotoLibrary } from "react-icons/md";
+import { FaPlus } from "react-icons/fa";
+import PortfolioModal from "@/components/PortfolioModal";
 
-const API_URL = "http://localhost:5000/api/v1/users";
-
-const AdminPage = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
+const PortfolioDashboard = () => {
+  const [images, setImages] = useState<IPortfolio[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [total, setTotal] = useState(0);
@@ -24,65 +23,80 @@ const AdminPage = () => {
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const [selectedImage, setSelectedImage] = useState<IPortfolio | null>(null);
 
-  const fetchUsers = async () => {
+  const API_URL = "http://localhost:5000/api/images";
+
+  const fetchImages = async () => {
     try {
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
-      setUsers(res.data.data);
+
+      setImages(res.data.data);
       setTotal(res.data.total);
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchImages();
   }, [page, limit, search, sortField, sortOrder]);
 
-  const handleEdit = (row: IUser) => {
-    setSelectedUser(row);
+  const handleEdit = (image: IPortfolio) => {
+    setSelectedImage(image);
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (row: IUser) => {
-    if (!confirm("Delete this user?")) return;
-    await axios.delete(`${API_URL}/${row._id}`);
-    fetchUsers();
-  };
+  const handleDelete = async (image: IPortfolio) => {
+    const id = image._id || image.id;
+    if (!confirm("Delete this image?")) return;
 
+    await axios.delete(`${API_URL}/${id}`);
+    fetchImages();
+  };
   const columns: IColumn[] = [
     {
-      key: "name",
-      label: "Name",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
+      key: "imageUrl",
+      label: "Image",
+      thClass: "w-32 h-16",
+      tdClass: "w-32 h-16",
+      useValue: true,
+      render: (value: string) =>
+        value ? (
+          <img
+            src={value}
+            alt="preview"
+            className="w-24 h-24 object-cover rounded"
+          />
+        ) : (
+          <span>No Image</span>
+        ),
+    },
+    {
+      key: "alt",
+      useValue: true,
+      label: "Alt Text",
+      thClass: "w-48 h-16",
+      tdClass: "w-48 h-16",
       headerComponent: (
         <ReusableSort
           sortField={sortField}
           onSortFieldChange={setSortField}
-          sortOptions={[{ value: "name", label: "Name" }]}
+          sortOptions={[{ value: "alt", label: "Alt Text" }]}
           sortOrder={sortOrder}
           onSortOrderChange={setSortOrder}
         />
       ),
     },
     {
-      key: "email",
-      label: "Email",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "email", label: "Email" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
+      key: "createdAt",
+      label: "Created",
+      thClass: "w-36 h-16",
+      tdClass: "w-36 h-16",
+      useValue: true,
+      render: (value: string) => new Date(value).toLocaleDateString(),
     },
   ];
 
@@ -91,13 +105,13 @@ const AdminPage = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <FaPlus className="text-6xl p-2 bg-blue-600 text-white rounded-lg" />
+            <MdPhotoLibrary className="text-6xl p-2 bg-purple-600 text-white rounded-lg" />
           }
-          title="Users"
-          buttonText="Add User"
+          title="Portfolio"
+          buttonText="Add Image"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
-            setSelectedUser(null);
+            setSelectedImage(null);
             setIsModalOpen(true);
           }}
         />
@@ -114,8 +128,8 @@ const AdminPage = () => {
 
         <DynamicTable
           columns={columns}
-          data={users}
-          noDataText="No users found"
+          data={images}
+          noDataText="No images found"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
@@ -131,15 +145,15 @@ const AdminPage = () => {
           }}
         />
 
-        <AdminModal
+        <PortfolioModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          user={selectedUser}
-          onSaved={fetchUsers}
+          image={selectedImage}
+          onSaved={fetchImages}
         />
       </div>
     </Layout>
   );
 };
 
-export default AdminPage;
+export default PortfolioDashboard;

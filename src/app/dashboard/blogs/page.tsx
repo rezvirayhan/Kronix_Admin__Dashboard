@@ -7,16 +7,24 @@ import DynamicTable from "@/components/DynamicTable";
 import DynamicPagination from "@/components/DynamicPagination";
 import ReusableSearch from "@/components/ReusableSearch";
 import ReusableSort from "@/components/ReusableSort";
-import { IColumn } from "@/types/IColumn";
-import { FaPlus } from "react-icons/fa";
 import HeaderCard from "@/components/HeaderCard";
-import AdminModal from "@/components/AdminModal";
-import { IUser } from "@/types/IUser";
+import { IColumn } from "@/types/IColumn";
 
-const API_URL = "http://localhost:5000/api/v1/users";
+import { MdOutlineLibraryBooks } from "react-icons/md";
+import { FaPlus } from "react-icons/fa";
+import { BlogModal } from "@/components/BlogModal";
 
-const AdminPage = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
+export interface IBlog {
+  _id?: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  image?: string;
+  createdAt?: string;
+}
+
+const BlogDashboard = () => {
+  const [blogs, setBlogs] = useState<IBlog[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [total, setTotal] = useState(0);
@@ -24,65 +32,85 @@ const AdminPage = () => {
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const [selectedBlog, setSelectedBlog] = useState<IBlog | null>(null);
 
-  const fetchUsers = async () => {
+  const API_URL = "http://localhost:5000/api/blogs";
+
+  const fetchBlogs = async () => {
     try {
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
-      setUsers(res.data.data);
-      setTotal(res.data.total);
+      setBlogs(res.data.data || res.data);
+      setTotal(res.data.total || res.data.length);
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchBlogs();
   }, [page, limit, search, sortField, sortOrder]);
 
-  const handleEdit = (row: IUser) => {
-    setSelectedUser(row);
+  const handleEdit = (blog: IBlog) => {
+    setSelectedBlog(blog);
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (row: IUser) => {
-    if (!confirm("Delete this user?")) return;
-    await axios.delete(`${API_URL}/${row._id}`);
-    fetchUsers();
+  const handleDelete = async (blog: IBlog) => {
+    if (!confirm("Are you sure you want to delete this blog?")) return;
+    const id = blog._id;
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      fetchBlogs();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete blog");
+    }
   };
 
   const columns: IColumn[] = [
     {
-      key: "name",
-      label: "Name",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
+      key: "image",
+      label: "Image",
+      useValue: false,
+      thClass: "w-32 h-16",
+      tdClass: "w-32 h-16",
+      render: (row: Hero) => {
+        const value = row.image;
+        return value ? (
+          <img
+            src={value}
+            alt="preview"
+            className="w-24 h-24 object-cover rounded"
+          />
+        ) : (
+          <span>No Image</span>
+        );
+      },
+    },
+    {
+      key: "title",
+      label: "Title",
+      useValue: false,
+      thClass: "w-48 h-16",
+      tdClass: "w-48 h-16",
       headerComponent: (
         <ReusableSort
           sortField={sortField}
           onSortFieldChange={setSortField}
-          sortOptions={[{ value: "name", label: "Name" }]}
+          sortOptions={[{ value: "title", label: "Title" }]}
           sortOrder={sortOrder}
           onSortOrderChange={setSortOrder}
         />
       ),
     },
     {
-      key: "email",
-      label: "Email",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "email", label: "Email" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
+      key: "subtitle",
+      useValue: false,
+      label: "Subtitle",
+      thClass: "w-48 h-16",
+      tdClass: "w-48 h-16",
     },
   ];
 
@@ -91,13 +119,13 @@ const AdminPage = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <FaPlus className="text-6xl p-2 bg-blue-600 text-white rounded-lg" />
+            <MdOutlineLibraryBooks className="text-6xl p-2 bg-purple-600 text-white rounded-lg" />
           }
-          title="Users"
-          buttonText="Add User"
+          title="Blogs"
+          buttonText="Add Blog"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
-            setSelectedUser(null);
+            setSelectedBlog(null);
             setIsModalOpen(true);
           }}
         />
@@ -114,8 +142,8 @@ const AdminPage = () => {
 
         <DynamicTable
           columns={columns}
-          data={users}
-          noDataText="No users found"
+          data={blogs}
+          noDataText="No blogs found"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
@@ -131,15 +159,15 @@ const AdminPage = () => {
           }}
         />
 
-        <AdminModal
+        <BlogModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
-          user={selectedUser}
-          onSaved={fetchUsers}
+          blog={selectedBlog}
+          onSaved={fetchBlogs}
         />
       </div>
     </Layout>
   );
 };
 
-export default AdminPage;
+export default BlogDashboard;

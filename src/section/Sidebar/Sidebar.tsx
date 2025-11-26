@@ -36,37 +36,57 @@ const Sidebar = () => {
       route: "/dashboard/admin",
     },
     {
-      name: "User",
+      name: "Banner",
       icon: <span className="text-lg">icon</span>,
-      route: "/dashboard/user",
+      route: "/dashboard/banner",
     },
     {
-      name: "Game",
+      name: "Hero",
       icon: <span className="text-lg">icon</span>,
-      route: "/dashboard/game",
+      route: "/dashboard/hero",
     },
     {
-      name: "Leaderboard",
+      name: "Testimonial",
       icon: <span className="text-lg">icon</span>,
-      route: "/dashboard/leaderboard",
+      route: "/dashboard/testimonial",
     },
     {
-      name: "Feedback",
+      name: "Portfolio",
       icon: <span className="text-lg">icon</span>,
-      route: "/dashboard/feedback",
+      route: "/dashboard/portfolio",
+    },
+    {
+      name: "Category",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/category",
+    },
+    {
+      name: "Messages",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/messages",
+    },
+    {
+      name: "Pricing",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/pricing",
+    },
+    {
+      name: "Blogs",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/blogs",
     },
   ];
 
   return (
-    <aside className="fixed top-20 left-0 w-70 h-[calc(100vh-4rem)] bg-white text-white flex flex-col justify-between ml-5 mt-5">
+    <aside className="fixed top-20 left-0 w-70 h-[calc(95vh-4rem)] bg-white text-white flex flex-col justify-between ml-5 mt-5">
       <ul className="space-y-2">
         {items.map((item) => (
           <SidebarItem key={item.name} {...item} />
         ))}
       </ul>
 
-      <button className="flex items-center gap-2 text-red-400 hover:text-red-600 px-3 py-2 rounded-lg transition">
-        <FaSignOutAlt /> Logout
+      <button className="flex text-7xl items-center gap-2 text-black hover:text-red-600  rounded-lg transition">
+        <FaSignOutAlt className="text-black" /> Logout
       </button>
     </aside>
   );

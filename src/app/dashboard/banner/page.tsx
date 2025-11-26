@@ -1,89 +1,88 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "@/components/Layout";
 import DynamicTable from "@/components/DynamicTable";
 import DynamicPagination from "@/components/DynamicPagination";
 import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import { IColumn } from "@/types/IColumn";
+import BannerModal from "@/components/BannerModal";
 import { FaPlus } from "react-icons/fa";
 import HeaderCard from "@/components/HeaderCard";
-import AdminModal from "@/components/AdminModal";
-import { IUser } from "@/types/IUser";
+import { MdPriceChange } from "react-icons/md";
+import ReusableSort from "@/components/ReusableSort";
 
-const API_URL = "http://localhost:5000/api/v1/users";
+interface IBanner {
+  _id?: string;
+  mainTitle: string;
+  highlight: string;
+  subtitle: string;
+  buttonText: string;
+  trustedText: string;
+}
 
-const AdminPage = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
+const BannerDashboard = () => {
+  const [banners, setBanners] = useState<IBanner[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const [isBannerModalOpen, setIsBannerModalOpen] = useState(false);
+  const [selectedBanner, setSelectedBanner] = useState<IBanner | null>(null);
 
-  const fetchUsers = async () => {
+  const fetchBanners = async () => {
     try {
-      const res = await axios.get(API_URL, {
+      const res = await axios.get("http://localhost:5000/api/banners", {
         params: { page, limit, search, sortField, sortOrder },
       });
-      setUsers(res.data.data);
-      setTotal(res.data.total);
+
+      setBanners(res.data.data || res.data);
+      setTotal(res.data.total || res.data.length || 0);
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchBanners();
   }, [page, limit, search, sortField, sortOrder]);
 
-  const handleEdit = (row: IUser) => {
-    setSelectedUser(row);
-    setIsModalOpen(true);
+  const handleEdit = (banner: IBanner) => {
+    setSelectedBanner(banner);
+    setIsBannerModalOpen(true);
   };
 
-  const handleDelete = async (row: IUser) => {
-    if (!confirm("Delete this user?")) return;
-    await axios.delete(`${API_URL}/${row._id}`);
-    fetchUsers();
-  };
-
-  const columns: IColumn[] = [
+  const columns = [
     {
-      key: "name",
-      label: "Name",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
+      key: "mainTitle",
+      label: "Main Title",
       headerComponent: (
         <ReusableSort
           sortField={sortField}
           onSortFieldChange={setSortField}
-          sortOptions={[{ value: "name", label: "Name" }]}
+          sortOptions={[{ value: "mainTitle", label: "Main Title" }]}
           sortOrder={sortOrder}
           onSortOrderChange={setSortOrder}
         />
       ),
     },
     {
-      key: "email",
-      label: "Email",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
+      key: "highlight",
+      label: "Highlight",
       headerComponent: (
         <ReusableSort
           sortField={sortField}
           onSortFieldChange={setSortField}
-          sortOptions={[{ value: "email", label: "Email" }]}
+          sortOptions={[{ value: "highlight", label: "Highlight" }]}
           sortOrder={sortOrder}
           onSortOrderChange={setSortOrder}
         />
       ),
     },
+    { key: "subtitle", label: "Subtitle" },
+    { key: "buttonText", label: "Button Text" },
+    { key: "trustedText", label: "Trusted Text" },
   ];
 
   return (
@@ -91,14 +90,14 @@ const AdminPage = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <FaPlus className="text-6xl p-2 bg-blue-600 text-white rounded-lg" />
+            <MdPriceChange className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
-          title="Users"
-          buttonText="Add User"
+          title="Banners"
+          buttonText="Add Banner"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
-            setSelectedUser(null);
-            setIsModalOpen(true);
+            setSelectedBanner(null);
+            setIsBannerModalOpen(true);
           }}
         />
 
@@ -114,10 +113,9 @@ const AdminPage = () => {
 
         <DynamicTable
           columns={columns}
-          data={users}
-          noDataText="No users found"
+          data={banners}
+          noDataText="No banners found"
           onEdit={handleEdit}
-          onDelete={handleDelete}
         />
 
         <DynamicPagination
@@ -131,15 +129,15 @@ const AdminPage = () => {
           }}
         />
 
-        <AdminModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          user={selectedUser}
-          onSaved={fetchUsers}
+        <BannerModal
+          isOpen={isBannerModalOpen}
+          onClose={() => setIsBannerModalOpen(false)}
+          banner={selectedBanner}
+          onSaved={fetchBanners}
         />
       </div>
     </Layout>
   );
 };
 
-export default AdminPage;
+export default BannerDashboard;

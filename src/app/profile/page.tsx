@@ -4,8 +4,8 @@ import { FaUserAlt } from "react-icons/fa";
 const ProfilePage = () => {
   return (
     <Layout>
-      <div className="pt-5 pl-28">
-        <div className="flex gap-3 items-center">
+      <div className="pt-5 lh:pl-28">
+        <div className="lg:flex gap-3 items-center">
           <FaUserAlt className="text-5xl bg-[#019ee2] text-white p-2 rounded-md " />
           <h2 className="text-2xl font-bold ">Rezvi Rayhan</h2>
         </div>
@@ -17,13 +17,13 @@ const ProfilePage = () => {
               className="rounded-full w-[13%] mx-auto "
             />
           </div>
-          <div className="w-2/3 bg-[#d1d5db] mx-auto h-28 mt-4 rounded-xl">
-            <div className="flex pl-12 pt-8">
+          <div className="lg:w-2/3 bg-[#d1d5db] mx-auto lg:h-28 mt-4 rounded-xl">
+            <div className="lg:flex pl-12 pt-8  lg:pb-0 pb-10">
               <div>
                 <h2>Name</h2>
                 <h2>Rezvi Rayhan</h2>
               </div>
-              <div className="ml-96">
+              <div className="lg:ml-96">
                 <h2>Email</h2>
                 <h2>reavirayhan2002@gmail.com</h2>
               </div>

@@ -1,77 +1,67 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "@/components/Layout";
 import DynamicTable from "@/components/DynamicTable";
 import DynamicPagination from "@/components/DynamicPagination";
 import ReusableSearch from "@/components/ReusableSearch";
 import ReusableSort from "@/components/ReusableSort";
-import { IColumn } from "@/types/IColumn";
-import { FaPlus } from "react-icons/fa";
-import HeaderCard from "@/components/HeaderCard";
-import AdminModal from "@/components/AdminModal";
-import { IUser } from "@/types/IUser";
 
-const API_URL = "http://localhost:5000/api/v1/users";
+interface IEmail {
+  _id: string;
+  name?: string;
+  email: string;
+  subject?: string;
+  message: string;
+  createdAt: string;
+}
 
-const AdminPage = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
+const EmailsPage = () => {
+  const [emails, setEmails] = useState<IEmail[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const fetchUsers = async () => {
+  const fetchEmails = async () => {
     try {
-      const res = await axios.get(API_URL, {
+      setLoading(true);
+      const res = await axios.get("http://localhost:5000/api/emails", {
         params: { page, limit, search, sortField, sortOrder },
       });
-      setUsers(res.data.data);
+      setEmails(res.data.data);
       setTotal(res.data.total);
     } catch (err) {
-      console.error(err);
+      console.error("API Error:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchEmails();
   }, [page, limit, search, sortField, sortOrder]);
 
-  const handleEdit = (row: IUser) => {
-    setSelectedUser(row);
-    setIsModalOpen(true);
+  const handleDelete = async (row: IEmail) => {
+    if (!confirm("Are you sure you want to delete this email?")) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/emails/${row._id}`);
+      fetchEmails();
+    } catch (err) {
+      console.error("Delete Error:", err);
+      alert("Failed to delete email.");
+    }
   };
 
-  const handleDelete = async (row: IUser) => {
-    if (!confirm("Delete this user?")) return;
-    await axios.delete(`${API_URL}/${row._id}`);
-    fetchUsers();
-  };
-
-  const columns: IColumn[] = [
+  const columns = [
     {
-      key: "name",
+      key: "text",
       label: "Name",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "name", label: "Name" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
-    },
-    {
-      key: "email",
-      label: "Email",
       thClass: "w-36 h-12",
       tdClass: "w-36 h-12",
       headerComponent: (
@@ -84,23 +74,44 @@ const AdminPage = () => {
         />
       ),
     },
+    {
+      key: "userEmail",
+      label: "Email",
+      thClass: "w-48 h-12",
+      tdClass: "w-48 h-12",
+      headerComponent: (
+        <ReusableSort
+          sortField={sortField}
+          onSortFieldChange={setSortField}
+          sortOptions={[{ value: "userEmail", label: "Email" }]}
+          sortOrder={sortOrder}
+          onSortOrderChange={setSortOrder}
+        />
+      ),
+    },
+
+    {
+      key: "createdAt",
+      label: "Created At",
+      thClass: "w-36 h-12",
+      tdClass: "w-36 h-12",
+      headerComponent: (
+        <ReusableSort
+          sortField={sortField}
+          onSortFieldChange={setSortField}
+          sortOptions={[{ value: "createdAt", label: "Created At" }]}
+          sortOrder={sortOrder}
+          onSortOrderChange={setSortOrder}
+        />
+      ),
+      render: (value: string) => new Date(value).toLocaleString(),
+    },
   ];
 
   return (
     <Layout>
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
-        <HeaderCard
-          icon={
-            <FaPlus className="text-6xl p-2 bg-blue-600 text-white rounded-lg" />
-          }
-          title="Users"
-          buttonText="Add User"
-          buttonIcon={<FaPlus />}
-          onButtonClick={() => {
-            setSelectedUser(null);
-            setIsModalOpen(true);
-          }}
-        />
+        <h1 className="text-2xl font-bold mb-4">Emails List</h1>
 
         <div className="mb-4 flex justify-end">
           <ReusableSearch
@@ -114,9 +125,9 @@ const AdminPage = () => {
 
         <DynamicTable
           columns={columns}
-          data={users}
-          noDataText="No users found"
-          onEdit={handleEdit}
+          data={emails}
+          isLoading={loading}
+          noDataText="No emails found"
           onDelete={handleDelete}
         />
 
@@ -130,16 +141,9 @@ const AdminPage = () => {
             setPage(1);
           }}
         />
-
-        <AdminModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          user={selectedUser}
-          onSaved={fetchUsers}
-        />
       </div>
     </Layout>
   );
 };
 
-export default AdminPage;
+export default EmailsPage;

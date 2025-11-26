@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "@/components/Layout";
@@ -7,31 +6,30 @@ import DynamicTable from "@/components/DynamicTable";
 import DynamicPagination from "@/components/DynamicPagination";
 import ReusableSearch from "@/components/ReusableSearch";
 import ReusableSort from "@/components/ReusableSort";
+import { IPricing } from "@/types/IPricing";
 import { IColumn } from "@/types/IColumn";
+import { MdPriceChange } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import HeaderCard from "@/components/HeaderCard";
-import AdminModal from "@/components/AdminModal";
-import { IUser } from "@/types/IUser";
+import PricingModal from "@/components/PricingModal";
 
-const API_URL = "http://localhost:5000/api/v1/users";
-
-const AdminPage = () => {
-  const [users, setUsers] = useState<IUser[]>([]);
+const PricingDashboard = () => {
+  const [pricings, setPricings] = useState<IPricing[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+  const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
+  const [selectedPricing, setSelectedPricing] = useState<IPricing | null>(null);
 
-  const fetchUsers = async () => {
+  const fetchPricings = async () => {
     try {
-      const res = await axios.get(API_URL, {
+      const res = await axios.get("http://localhost:5000/api/pricing", {
         params: { page, limit, search, sortField, sortOrder },
       });
-      setUsers(res.data.data);
+      setPricings(res.data.data);
       setTotal(res.data.total);
     } catch (err) {
       console.error(err);
@@ -39,49 +37,87 @@ const AdminPage = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
+    fetchPricings();
   }, [page, limit, search, sortField, sortOrder]);
 
-  const handleEdit = (row: IUser) => {
-    setSelectedUser(row);
-    setIsModalOpen(true);
+  const handleEdit = (row: IPricing) => {
+    setSelectedPricing(row);
+    setIsPricingModalOpen(true);
   };
 
-  const handleDelete = async (row: IUser) => {
-    if (!confirm("Delete this user?")) return;
-    await axios.delete(`${API_URL}/${row._id}`);
-    fetchUsers();
+  const handleDelete = async (row: IPricing) => {
+    if (!confirm("Delete this pricing?")) return;
+
+    await axios.delete(`http://localhost:5000/api/pricing/${row._id}`);
+    fetchPricings();
   };
 
   const columns: IColumn[] = [
     {
-      key: "name",
-      label: "Name",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
+      key: "pricing",
+      label: "Pricing",
+      useValue: true,
+      thClass: "w-24 h-10",
+      tdClass: "w-10 h-10",
       headerComponent: (
         <ReusableSort
           sortField={sortField}
           onSortFieldChange={setSortField}
-          sortOptions={[{ value: "name", label: "Name" }]}
+          sortOptions={[{ value: "pricing", label: "Pricing" }]}
           sortOrder={sortOrder}
           onSortOrderChange={setSortOrder}
         />
       ),
     },
     {
-      key: "email",
-      label: "Email",
+      key: "priceTitle",
+      label: "Price Title",
+      useValue: true,
       thClass: "w-36 h-12",
       tdClass: "w-36 h-12",
       headerComponent: (
         <ReusableSort
           sortField={sortField}
           onSortFieldChange={setSortField}
-          sortOptions={[{ value: "email", label: "Email" }]}
+          sortOptions={[{ value: "priceTitle", label: "Price Title" }]}
           sortOrder={sortOrder}
           onSortOrderChange={setSortOrder}
         />
+      ),
+    },
+    {
+      key: "pricingPackage",
+      label: "Package",
+      thClass: "w-20 h-12",
+      useValue: true,
+      tdClass: "w-20 h-12",
+    },
+    {
+      key: "description",
+      label: "Description",
+      thClass: "w-60 h-12",
+      tdClass: "w-60 h-12",
+      useValue: true,
+    },
+    {
+      key: "price",
+      label: "Price",
+      thClass: "w-10 h-12",
+      tdClass: "w-10 h-12",
+      useValue: true,
+    },
+    {
+      key: "options",
+      label: "Options",
+      thClass: "w-52 h-12",
+      useValue: true,
+      tdClass: "w-52 h-12",
+      render: (value: string[]) => (
+        <div>
+          {value.map((o, i) => (
+            <p key={i}>{o}</p>
+          ))}
+        </div>
       ),
     },
   ];
@@ -91,14 +127,14 @@ const AdminPage = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <FaPlus className="text-6xl p-2 bg-blue-600 text-white rounded-lg" />
+            <MdPriceChange className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
-          title="Users"
-          buttonText="Add User"
+          title="Pricing"
+          buttonText="Add Pricing"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
-            setSelectedUser(null);
-            setIsModalOpen(true);
+            setSelectedPricing(null);
+            setIsPricingModalOpen(true);
           }}
         />
 
@@ -114,8 +150,8 @@ const AdminPage = () => {
 
         <DynamicTable
           columns={columns}
-          data={users}
-          noDataText="No users found"
+          data={pricings}
+          noDataText="No pricing found"
           onEdit={handleEdit}
           onDelete={handleDelete}
         />
@@ -131,15 +167,15 @@ const AdminPage = () => {
           }}
         />
 
-        <AdminModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-          user={selectedUser}
-          onSaved={fetchUsers}
+        <PricingModal
+          isOpen={isPricingModalOpen}
+          onClose={() => setIsPricingModalOpen(false)}
+          pricing={selectedPricing}
+          onSaved={fetchPricings}
         />
       </div>
     </Layout>
   );
 };
 
-export default AdminPage;
+export default PricingDashboard;
