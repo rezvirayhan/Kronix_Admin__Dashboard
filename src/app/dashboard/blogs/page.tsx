@@ -1,0 +1,173 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Layout from "@/components/Layout";
+import DynamicTable from "@/components/DynamicTable";
+import DynamicPagination from "@/components/DynamicPagination";
+import ReusableSearch from "@/components/ReusableSearch";
+import ReusableSort from "@/components/ReusableSort";
+import HeaderCard from "@/components/HeaderCard";
+import { IColumn } from "@/types/IColumn";
+
+import { MdOutlineLibraryBooks } from "react-icons/md";
+import { FaPlus } from "react-icons/fa";
+import { BlogModal } from "@/components/BlogModal";
+
+export interface IBlog {
+  _id?: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  image?: string;
+  createdAt?: string;
+}
+
+const BlogDashboard = () => {
+  const [blogs, setBlogs] = useState<IBlog[]>([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [total, setTotal] = useState(0);
+  const [search, setSearch] = useState("");
+  const [sortField, setSortField] = useState("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedBlog, setSelectedBlog] = useState<IBlog | null>(null);
+
+  const API_URL = "http://localhost:5000/api/blogs";
+
+  const fetchBlogs = async () => {
+    try {
+      const res = await axios.get(API_URL, {
+        params: { page, limit, search, sortField, sortOrder },
+      });
+      setBlogs(res.data.data || res.data);
+      setTotal(res.data.total || res.data.length);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlogs();
+  }, [page, limit, search, sortField, sortOrder]);
+
+  const handleEdit = (blog: IBlog) => {
+    setSelectedBlog(blog);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (blog: IBlog) => {
+    if (!confirm("Are you sure you want to delete this blog?")) return;
+    const id = blog._id;
+    try {
+      await axios.delete(`${API_URL}/${id}`);
+      fetchBlogs();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete blog");
+    }
+  };
+
+  const columns: IColumn[] = [
+    {
+      key: "image",
+      label: "Image",
+      useValue: false,
+      thClass: "w-32 h-16",
+      tdClass: "w-32 h-16",
+      render: (row: Hero) => {
+        const value = row.image;
+        return value ? (
+          <img
+            src={value}
+            alt="preview"
+            className="w-24 h-24 object-cover rounded"
+          />
+        ) : (
+          <span>No Image</span>
+        );
+      },
+    },
+    {
+      key: "title",
+      label: "Title",
+      useValue: false,
+      thClass: "w-48 h-16",
+      tdClass: "w-48 h-16",
+      headerComponent: (
+        <ReusableSort
+          sortField={sortField}
+          onSortFieldChange={setSortField}
+          sortOptions={[{ value: "title", label: "Title" }]}
+          sortOrder={sortOrder}
+          onSortOrderChange={setSortOrder}
+        />
+      ),
+    },
+    {
+      key: "subtitle",
+      useValue: false,
+      label: "Subtitle",
+      thClass: "w-48 h-16",
+      tdClass: "w-48 h-16",
+    },
+  ];
+
+  return (
+    <Layout>
+      <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
+        <HeaderCard
+          icon={
+            <MdOutlineLibraryBooks className="text-6xl p-2 bg-purple-600 text-white rounded-lg" />
+          }
+          title="Blogs"
+          buttonText="Add Blog"
+          buttonIcon={<FaPlus />}
+          onButtonClick={() => {
+            setSelectedBlog(null);
+            setIsModalOpen(true);
+          }}
+        />
+
+        <div className="mb-4 flex justify-end">
+          <ReusableSearch
+            value={search}
+            onChange={(val) => {
+              setPage(1);
+              setSearch(val);
+            }}
+          />
+        </div>
+
+        <DynamicTable
+          columns={columns}
+          data={blogs}
+          noDataText="No blogs found"
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+
+        <DynamicPagination
+          page={page}
+          limit={limit}
+          total={total}
+          onPageChange={setPage}
+          onLimitChange={(newLimit) => {
+            setLimit(newLimit);
+            setPage(1);
+          }}
+        />
+
+        <BlogModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          blog={selectedBlog}
+          onSaved={fetchBlogs}
+        />
+      </div>
+    </Layout>
+  );
+};
+
+export default BlogDashboard;
