@@ -36,9 +36,44 @@ const Sidebar = () => {
       route: "/dashboard/admin",
     },
     {
-      name: "User",
+      name: "Banner",
       icon: <span className="text-lg">icon</span>,
-      route: "/dashboard/user",
+      route: "/dashboard/banner",
+    },
+    {
+      name: "Hero",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/hero",
+    },
+    {
+      name: "Testimonial",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/testimonial",
+    },
+    {
+      name: "Portfolio",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/portfolio",
+    },
+    {
+      name: "Category",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/category",
+    },
+    {
+      name: "Messages",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/messages",
+    },
+    {
+      name: "Pricing",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/pricing",
+    },
+    {
+      name: "Blogs",
+      icon: <span className="text-lg">icon</span>,
+      route: "/dashboard/blogs",
     },
     {
       name: "Game",
