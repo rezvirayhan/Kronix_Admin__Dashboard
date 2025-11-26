@@ -34,7 +34,6 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholderColor = "placeholder-gray-400",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-
   const isPassword = type === "password";
 
   return (
@@ -59,20 +58,20 @@ const InputField: React.FC<InputFieldProps> = ({
           required={required}
           disabled={disabled}
           autoComplete="off"
-          className={`flex h-11 w-full rounded-md border border-black bg-white px-3 py-2 text-sm 
-          ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium 
-          focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black focus-visible:ring-offset-0 
-          disabled:cursor-not-allowed disabled:opacity-50 mt-1 shadow-inner transition-all
-          ${textColor} ${placeholderColor} ${className}`}
+          className={`flex h-10 w-full rounded-md border border-gray-300 bg-[#ebeff4] px-3 py-2 text-sm 
+                      placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500
+                      focus:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 mt-1
+                      shadow-[inset_1px_1px_2px_#aaa,inset_-1px_-1px_2px_#fff]
+                      ${textColor} ${placeholderColor} ${className}`}
         />
 
         {isPassword && (
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute inset-y-0 right-3 flex items-center text-gray-500 hover:text-gray-700"
+            className="absolute inset-y-0 right-3 flex items-center text-black text-sm hover:text-gray-700"
           >
-            {showPassword ? <span>Hide </span> : <span>Show </span>}
+            {showPassword ? "Hide" : "Show"}
           </button>
         )}
       </div>
