@@ -5,5 +5,6 @@ export interface IColumn {
   render?: (value: any, row?: any) => React.ReactNode;
   thClass?: string;
   tdClass?: string;
+  useValue: boolean;
   headerComponent?: React.ReactNode;
 }
