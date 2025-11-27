@@ -1,7 +1,8 @@
 import Navbar from "@/section/Navbar/Navbar";
 import Sidebar from "@/section/Sidebar/Sidebar";
 import { ReactNode } from "react";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 interface LayoutProps {
   children: ReactNode;
 }
@@ -13,6 +14,13 @@ const Layout = ({ children }: LayoutProps) => {
       <Sidebar />
       <main className="ml-[300px] mt-16 p-6 bg-[#ebeff4] min-h-screen">
         {children}
+        <ToastContainer
+          position="bottom-right"
+          autoClose={1500}
+          hideProgressBar={false}
+          closeOnClick
+          pauseOnHover
+        />
       </main>
     </div>
   );

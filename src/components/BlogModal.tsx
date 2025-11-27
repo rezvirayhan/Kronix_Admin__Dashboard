@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { IBlog } from "@/app/dashboard/blogs/page";
+import InputField from "./InputFilde";
+import { IoCloseOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 interface Props {
   isOpen: boolean;
@@ -10,9 +13,7 @@ interface Props {
   blog: IBlog | null;
   onSaved: () => void;
 }
-
 const API_URL = "http://localhost:5000/api/blogs";
-
 export const BlogModal: React.FC<Props> = ({
   isOpen,
   onClose,
@@ -36,7 +37,7 @@ export const BlogModal: React.FC<Props> = ({
       setDescription("");
       setImageFile(null);
     }
-  }, [blog]);
+  }, [blog, isOpen]);
 
   if (!isOpen) return null;
 
@@ -60,8 +61,13 @@ export const BlogModal: React.FC<Props> = ({
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
+
       onSaved();
       onClose();
+      setTitle("");
+      setSubtitle("");
+      setDescription("");
+      setImageFile(null);
     } catch (err) {
       console.error(err);
       alert("Failed to save blog");
@@ -69,55 +75,69 @@ export const BlogModal: React.FC<Props> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6">
-        <h2 className="text-xl font-semibold mb-4">
-          {blog ? "Edit Blog" : "Add New Blog"}
-        </h2>
+    <div className="fixed inset-0 bg-[#333333ec] flex justify-center items-center z-50">
+      <div className="bg-[#e8ebf0] rounded-lg shadow-lg w-full max-w-md p-6">
+        <div className="flex justify-between">
+          <h2 className="text-lg font-medium mb-6">
+            {blog ? "Edit Blog" : "Add New Blog"}
+          </h2>
+          <button type="button" onClick={onClose}>
+            <IoCloseOutline className="text-xl cursor-pointer" />
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
+          <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+            Title <span className="text-red-600">*</span>
+          </label>
+          <InputField
             type="text"
             placeholder="Title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
-            className="border p-2 w-full rounded"
+            className="border p-2 rounded w-full"
           />
-          <input
+          <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+            Subtitle <span className="text-red-600">*</span>
+          </label>
+          <InputField
             type="text"
             placeholder="Subtitle"
             value={subtitle}
             onChange={(e) => setSubtitle(e.target.value)}
+            required
             className="border p-2 w-full rounded"
           />
-          <textarea
+          <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+            Description <span className="text-red-600">*</span>
+          </label>
+          <InputField
             placeholder="Description"
+            as="textarea"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            required
             className="border p-2 w-full rounded"
           />
-          <input
+          <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+            File <span className="text-red-600">*</span>
+          </label>
+          <InputField
             type="file"
             onChange={(e) =>
               setImageFile(e.target.files ? e.target.files[0] : null)
             }
+            required
             className="border p-2 w-full rounded"
           />
-          <div className="flex justify-end gap-2 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              {blog ? "Update" : "Create"}
-            </button>
-          </div>
+
+          <button
+            type="submit"
+            className="px-4 py-2 mt-3 bg-[#02a6dd] text-white rounded w-full font-semibold cursor-pointer text-[14px]"
+          >
+            {blog ? "Update" : "Save"}
+          </button>
         </form>
       </div>
     </div>

@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import InputField from "./InputFilde";
+import { IoCloseOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 interface IBanner {
   _id?: string;
@@ -80,64 +82,83 @@ const BannerModal: React.FC<Props> = ({ isOpen, onClose, banner, onSaved }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-[#3b383857] bg-opacity-50 flex items-center justify-center z-50 overflow-auto">
-      <div className="bg-[#ebeff4] p-6 rounded-lg shadow w-full max-w-xl space-y-4">
-        <h2 className="text-xl font-bold">
-          {banner?._id ? "Edit Banner" : "Add Banner"}
-        </h2>
+    <div className="fixed inset-0 bg-[#333333ec] flex items-center justify-center z-50 overflow-auto">
+      <div className="bg-[#e8ebf0]  p-6 rounded-lg shadow w-full max-w-xl space-y-4">
+        <div className="flex justify-between">
+          <h2 className="text-lg font-medium mb-6">
+            {banner?._id ? "Edit Banner" : "Add Banner"}
+          </h2>
+          <button type="button" onClick={onClose}>
+            <IoCloseOutline className="text-xl cursor-pointer" />
+          </button>
+        </div>
 
+        <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+          Main Title <span className="text-red-600">*</span>
+        </label>
         <InputField
-          label="Main Title"
           type="text"
           placeholder="Main Title"
           value={form.mainTitle}
           onChange={(e) => updateField("mainTitle", e.target.value)}
+          required
           className="border p-2 rounded w-full"
         />
+
+        <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+          Highlight <span className="text-red-600">*</span>
+        </label>
         <InputField
-          label="Highlight"
           type="text"
           placeholder="Highlight"
           value={form.highlight}
           onChange={(e) => updateField("highlight", e.target.value)}
+          required
           className="border p-2 rounded w-full"
         />
+
+        <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+          Subtitle <span className="text-red-600">*</span>
+        </label>
         <InputField
-          label="Subtitle"
           type="text"
           placeholder="Subtitle"
           value={form.subtitle}
           onChange={(e) => updateField("subtitle", e.target.value)}
+          required
           className="border p-2 rounded w-full"
         />
+
+        <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+          Button Text <span className="text-red-600">*</span>
+        </label>
         <InputField
-          label="Button Text"
           type="text"
           placeholder="Button Text"
           value={form.buttonText}
           onChange={(e) => updateField("buttonText", e.target.value)}
+          required
           className="border p-2 rounded w-full"
         />
+
+        <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+          Trusted Text <span className="text-red-600">*</span>
+        </label>
         <InputField
-          label="Trusted Text"
           type="text"
           placeholder="Trusted Text"
           value={form.trustedText}
           onChange={(e) => updateField("trustedText", e.target.value)}
+          required
           className="border p-2 rounded w-full"
         />
 
-        <div className="flex justify-end gap-2 mt-4">
-          <button className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
-            Cancel
-          </button>
-          <button
-            className="bg-green-600 text-white px-4 py-2 rounded"
-            onClick={handleSubmit}
-          >
-            {banner?._id ? "Update" : "Add"}
-          </button>
-        </div>
+        <button
+          className="px-4 py-2 mt-3 bg-[#02a6dd] text-white rounded w-full font-semibold cursor-pointer text-[14px]"
+          onClick={handleSubmit}
+        >
+          {banner?._id ? "Update" : "Add"}
+        </button>
       </div>
     </div>
   );

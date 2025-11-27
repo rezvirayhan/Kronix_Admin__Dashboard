@@ -57,32 +57,28 @@ const BannerDashboard = () => {
     {
       key: "mainTitle",
       label: "Main Title",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "mainTitle", label: "Main Title" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
+      thClass: "w-36",
+      tdClass: "w-36",
     },
     {
       key: "highlight",
       label: "Highlight",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "highlight", label: "Highlight" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
+      thClass: "w-10",
+      tdClass: "w-10",
     },
-    { key: "subtitle", label: "Subtitle" },
-    { key: "buttonText", label: "Button Text" },
-    { key: "trustedText", label: "Trusted Text" },
+    { key: "subtitle", label: "Subtitle", thClass: "w-52", tdClass: "w-52" },
+    {
+      key: "buttonText",
+      label: "Button Text",
+      thClass: "w-24",
+      tdClass: "w-24",
+    },
+    {
+      key: "trustedText",
+      label: "Trusted Text",
+      thClass: "w-44",
+      tdClass: "w-44",
+    },
   ];
 
   return (
@@ -93,7 +89,6 @@ const BannerDashboard = () => {
             <MdPriceChange className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Banners"
-          buttonText="Add Banner"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
             setSelectedBanner(null);
@@ -116,17 +111,6 @@ const BannerDashboard = () => {
           data={banners}
           noDataText="No banners found"
           onEdit={handleEdit}
-        />
-
-        <DynamicPagination
-          page={page}
-          limit={limit}
-          total={total}
-          onPageChange={setPage}
-          onLimitChange={(newLimit) => {
-            setLimit(newLimit);
-            setPage(1);
-          }}
         />
 
         <BannerModal

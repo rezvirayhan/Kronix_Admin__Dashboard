@@ -7,6 +7,9 @@ import DynamicTable from "@/components/DynamicTable";
 import DynamicPagination from "@/components/DynamicPagination";
 import ReusableSearch from "@/components/ReusableSearch";
 import ReusableSort from "@/components/ReusableSort";
+import HeaderCard from "@/components/HeaderCard";
+import { MdPriceChange } from "react-icons/md";
+import { CiText } from "react-icons/ci";
 
 interface IEmail {
   _id: string;
@@ -111,7 +114,12 @@ const EmailsPage = () => {
   return (
     <Layout>
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
-        <h1 className="text-2xl font-bold mb-4">Emails List</h1>
+        <HeaderCard
+          icon={
+            <CiText className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
+          }
+          title="Messages"
+        />
 
         <div className="mb-4 flex justify-end">
           <ReusableSearch
