@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Hero } from "@/app/dashboard/hero/page";
+import { IoCloseOutline } from "react-icons/io5";
+import InputField from "./InputFilde";
 
 interface Props {
   isOpen: boolean;
@@ -86,20 +88,32 @@ const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 overflow-y-auto max-h-[90vh]">
-        <h2 className="text-xl font-semibold mb-4">
-          {hero ? "Edit Hero" : "Add Hero"}
-        </h2>
+    <div className="fixed inset-0 bg-[#333333ec] flex justify-center items-center z-50">
+      <div className="bg-[#e8ebf0] rounded-lg shadow-lg w-2/4 p-6 overflow-y-auto ">
+        <div className="flex justify-between">
+          <h2 className="text-lg font-medium mb-6">
+            {hero ? "Edit Hero" : "Add Hero"}
+          </h2>
+          <button type="button" onClick={onClose}>
+            <IoCloseOutline className="text-xl cursor-pointer" />
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Main Title"
-            value={form.mainTitle}
-            onChange={(e) => setForm({ ...form, mainTitle: e.target.value })}
-            required
-            className="border p-2 w-full rounded"
-          />
+          <div>
+            <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+              Main Title <span className="text-red-600">*</span>
+            </label>
+            <InputField
+              type="text"
+              placeholder="Main Title"
+              value={form.mainTitle}
+              onChange={(e) => setForm({ ...form, mainTitle: e.target.value })}
+              required
+              className="border p-2 w-full rounded"
+            />
+          </div>
+
           <textarea
             placeholder="Description"
             value={form.description}
@@ -148,21 +162,12 @@ const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
             </div>
           ))}
 
-          <div className="flex justify-end gap-2 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              {hero ? "Update" : "Create"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 mt-3 bg-[#02a6dd] text-white rounded w-full font-semibold cursor-pointer text-[14px]"
+          >
+            {hero ? "Update" : "Save"}
+          </button>
         </form>
       </div>
     </div>

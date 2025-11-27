@@ -65,7 +65,6 @@ const AdminModal: React.FC<Props> = ({ isOpen, onClose, user, onSaved }) => {
           <h2 className="text-lg font-medium mb-6">
             {user ? "Edit Admin" : "Add Admin"}
           </h2>
-
           <button
             type="button"
             onClick={() => {

@@ -12,6 +12,7 @@ import { MdPeople } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import HeroModal from "@/components/HeroModal";
 import ReusableSort from "@/components/ReusableSort";
+import { BsPostageFill } from "react-icons/bs";
 
 const API_URL = "http://localhost:5000/api/heroes";
 
@@ -151,7 +152,7 @@ const HeroDashboard = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <MdPeople className="text-6xl p-2 bg-green-600 text-white rounded-lg" />
+            <BsPostageFill className="text-5xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Heroes"
           buttonText="Add Hero"

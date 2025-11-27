@@ -5,6 +5,7 @@ import { CiText } from "react-icons/ci";
 import { FaSignOutAlt } from "react-icons/fa";
 import { FaUserTie } from "react-icons/fa";
 import { VscPreview } from "react-icons/vsc";
+import { BsPostageFill } from "react-icons/bs";
 
 import {
   MdOutlineLibraryBooks,
@@ -61,7 +62,7 @@ const Sidebar = () => {
       name: "Hero",
       icon: (
         <span className="text-2xl text-white  bg-[#00b0ea] px-1 py-1 rounded-md">
-          <MdPriceChange />
+          <BsPostageFill />
         </span>
       ),
       route: "/dashboard/hero",
