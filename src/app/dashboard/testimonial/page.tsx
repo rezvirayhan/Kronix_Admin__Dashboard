@@ -12,6 +12,7 @@ import { IColumn } from "@/types/IColumn";
 import { MdPeople } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import TestimonialModal from "@/components/TestimonialModal";
+import { VscPreview } from "react-icons/vsc";
 
 export interface ITestimonial {
   _id?: string;
@@ -157,7 +158,7 @@ const TestimonialDashboard = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <MdPeople className="text-6xl p-2 bg-green-600 text-white rounded-lg" />
+            <VscPreview className="text-5xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Testimonials"
           buttonText="Add Testimonial"

@@ -105,7 +105,7 @@ const PortfolioDashboard = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <MdPhotoLibrary className="text-6xl p-2 bg-purple-600 text-white rounded-lg" />
+            <MdPhotoLibrary className="text-5xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Portfolio"
           buttonText="Add Image"

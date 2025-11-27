@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { IPortfolio } from "@/types/IPortfolio";
+import InputField from "./InputFilde";
+import { IoCloseOutline } from "react-icons/io5";
 
 interface Props {
   isOpen: boolean;
@@ -76,11 +78,25 @@ const PortfolioModal: React.FC<Props> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 relative">
-        <h2 className="text-xl font-semibold mb-4">
-          {image ? "Edit Image" : "Add New Image"}
-        </h2>
+    <div className="fixed inset-0 bg-[#333333ec] flex justify-center items-center z-50">
+      <div className="bg-[#e8ebf0]  rounded-lg shadow-lg w-full max-w-md p-6 relative">
+        <div className="flex justify-between">
+          <h2 className="text-lg font-medium mb-6">
+            {image ? "Edit Image" : "Add New Image"}
+          </h2>
+
+          <button
+            type="button"
+            onClick={() => {
+              setAltText("");
+              setFile(null);
+              setPreview("");
+              onClose();
+            }}
+          >
+            <IoCloseOutline className="text-xl cursor-pointer" />
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {preview && (
@@ -92,8 +108,10 @@ const PortfolioModal: React.FC<Props> = ({
           )}
 
           <div>
-            <label className="block mb-1 font-medium">Image</label>
-            <input
+            <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+              Image <span className="text-red-600">*</span>
+            </label>
+            <InputField
               key={preview}
               type="file"
               accept="image/*"
@@ -107,8 +125,10 @@ const PortfolioModal: React.FC<Props> = ({
           </div>
 
           <div>
-            <label className="block mb-1 font-medium">Alt Text</label>
-            <input
+            <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+              Alt Text <span className="text-red-600">*</span>
+            </label>
+            <InputField
               type="text"
               value={altText}
               onChange={(e) => setAltText(e.target.value)}
@@ -118,27 +138,12 @@ const PortfolioModal: React.FC<Props> = ({
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-4">
-            <button
-              type="button"
-              onClick={() => {
-                setAltText("");
-                setFile(null);
-                setPreview("");
-                onClose();
-              }}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              {image ? "Update" : "Create"}
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="px-4 py-2 mt-3 bg-[#02a6dd] text-white rounded w-full font-semibold cursor-pointer text-[14px]"
+          >
+            {image ? "Update" : "Save"}
+          </button>
         </form>
       </div>
     </div>

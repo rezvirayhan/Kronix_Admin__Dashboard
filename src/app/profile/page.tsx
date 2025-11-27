@@ -104,13 +104,16 @@ const ProfilePage = () => {
         </div>
         {showEditModal && (
           <div className="fixed inset-0 bg-[#333333ec]  flex items-center justify-center z-50">
-            <div className="bg-[#e8ebf0] p-6 rounded-lg w-[420px]">
+            <div className="bg-[#e8ebf0] p-5 rounded-lg w-[420px]">
               <div className="flex justify-between">
                 <div>
                   <h2 className="text-lg font-semibold mb-5">Update Profile</h2>
                 </div>
                 <div>
-                  <button onClick={() => setShowEditModal(false)} className="">
+                  <button
+                    onClick={() => setShowEditModal(false)}
+                    className="cursor-pointer"
+                  >
                     <IoCloseOutline className="text-xl" />
                   </button>
                 </div>

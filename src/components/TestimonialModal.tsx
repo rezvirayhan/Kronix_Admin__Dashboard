@@ -2,7 +2,11 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { ITestimonial } from "@/pages/admin/TestimonialDashboard";
+import { ITestimonial } from "@/app/dashboard/testimonial/page";
+import InputField from "./InputFilde";
+import { IoCloseOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   isOpen: boolean;
@@ -29,23 +33,27 @@ const TestimonialModal: React.FC<Props> = ({
   const [companyLogoFile, setCompanyLogoFile] = useState<File | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
+  const resetForm = () => {
+    setForm({
+      companyName: "",
+      name: "",
+      title: "",
+      titleReview: "",
+      reviewDescription: "",
+    });
+    setCompanyLogoFile(null);
+    setImageFile(null);
+  };
+
   useEffect(() => {
     if (testimonial) {
       setForm({ ...testimonial });
       setCompanyLogoFile(null);
       setImageFile(null);
     } else {
-      setForm({
-        companyName: "",
-        name: "",
-        title: "",
-        titleReview: "",
-        reviewDescription: "",
-      });
-      setCompanyLogoFile(null);
-      setImageFile(null);
+      resetForm();
     }
-  }, [testimonial]);
+  }, [testimonial, isOpen]);
 
   if (!isOpen) return null;
 
@@ -64,93 +72,145 @@ const TestimonialModal: React.FC<Props> = ({
         await axios.put(`${API_URL}/${testimonial._id}`, data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        toast.success("Testimonial updated successfully!", {
+          position: "top-right",
+        });
       } else {
         await axios.post(API_URL, data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        toast.success("Testimonial created successfully!", {
+          position: "top-right",
+        });
       }
+
       onSaved();
       onClose();
+      resetForm();
     } catch (err) {
       console.error(err);
-      alert("Failed to save testimonial");
+      toast.error("Failed to save testimonial.", { position: "top-right" });
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
-        <h2 className="text-xl font-semibold mb-4">
-          {testimonial ? "Edit Testimonial" : "Add Testimonial"}
-        </h2>
+    <div className="fixed inset-0 bg-[#333333ec] flex justify-center items-center z-50">
+      <div className="bg-[#e8ebf0] rounded-lg shadow-lg w-2/5 p-6">
+        <div className="flex justify-between">
+          <h2 className="text-lg font-medium mb-6">
+            {testimonial ? "Edit Testimonial" : "Add Testimonial"}
+          </h2>
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              resetForm();
+            }}
+          >
+            <IoCloseOutline className="text-xl cursor-pointer" />
+          </button>
+        </div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Company Name"
-            value={form.companyName}
-            onChange={(e) => setForm({ ...form, companyName: e.target.value })}
-            required
-            className="border p-2 w-full rounded"
-          />
-          <input
-            type="text"
-            placeholder="Name"
-            value={form.name}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            required
-            className="border p-2 w-full rounded"
-          />
-          <input
-            type="text"
-            placeholder="Title"
-            value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
-            required
-            className="border p-2 w-full rounded"
-          />
-          <textarea
-            placeholder="Title Review"
-            value={form.titleReview}
-            onChange={(e) => setForm({ ...form, titleReview: e.target.value })}
-            required
-            className="border p-2 w-full rounded"
-          />
-          <textarea
+          <div className="flex gap-5">
+            <div className="w-full">
+              <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+                Company Name <span className="text-red-600">*</span>
+              </label>
+              <InputField
+                type="text"
+                placeholder="Company Name"
+                value={form.companyName}
+                onChange={(e) =>
+                  setForm({ ...form, companyName: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="w-full">
+              <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+                Your Name <span className="text-red-600">*</span>
+              </label>
+              <InputField
+                type="text"
+                placeholder="Your Name"
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-5">
+            <div className="w-full">
+              <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+                Review Heading <span className="text-red-600">*</span>
+              </label>
+              <InputField
+                type="text"
+                placeholder="Review Heading"
+                value={form.titleReview}
+                onChange={(e) =>
+                  setForm({ ...form, titleReview: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="w-full">
+              <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+                Designation <span className="text-red-600">*</span>
+              </label>
+              <InputField
+                type="text"
+                placeholder="Your Designation"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-5">
+            <div className="w-full">
+              <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+                Company Logo <span className="text-red-600">*</span>
+              </label>
+              <InputField
+                type="file"
+                onChange={(e) =>
+                  setCompanyLogoFile(e.target.files ? e.target.files[0] : null)
+                }
+              />
+            </div>
+            <div className="w-full">
+              <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+                Image <span className="text-red-600">*</span>
+              </label>
+              <InputField
+                type="file"
+                onChange={(e) =>
+                  setImageFile(e.target.files ? e.target.files[0] : null)
+                }
+              />
+            </div>
+          </div>
+          <InputField
+            label="Review Description"
             placeholder="Review Description"
+            as="textarea"
             value={form.reviewDescription}
             onChange={(e) =>
               setForm({ ...form, reviewDescription: e.target.value })
             }
             required
-            className="border p-2 w-full rounded"
           />
-          <input
-            type="file"
-            onChange={(e) =>
-              setCompanyLogoFile(e.target.files ? e.target.files[0] : null)
-            }
-          />
-          <input
-            type="file"
-            onChange={(e) =>
-              setImageFile(e.target.files ? e.target.files[0] : null)
-            }
-          />
-          <div className="flex justify-end gap-2 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              {testimonial ? "Update" : "Create"}
-            </button>
-          </div>
+
+          <button
+            type="submit"
+            className="px-4 py-2 mt-3 bg-[#02a6dd] text-white rounded w-full font-semibold cursor-pointer text-[14px]"
+          >
+            {testimonial ? "Update" : "Save"}
+          </button>
         </form>
       </div>
     </div>

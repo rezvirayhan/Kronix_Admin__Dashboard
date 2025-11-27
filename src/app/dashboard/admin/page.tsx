@@ -12,6 +12,9 @@ import { FaPlus } from "react-icons/fa";
 import HeaderCard from "@/components/HeaderCard";
 import AdminModal from "@/components/AdminModal";
 import { IUser } from "@/types/IUser";
+import { toast } from "react-toastify";
+import DeleteingModal from "@/components/DeleteingModal";
+import { FaUserTie } from "react-icons/fa6";
 
 const API_URL = "http://localhost:5000/api/users";
 
@@ -23,16 +26,21 @@ const AdminPage = () => {
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<IUser | null>(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteUser, setDeleteUser] = useState<IUser | null>(null);
 
   const fetchUsers = async () => {
     try {
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
-      setUsers(res.data.data);
-      setTotal(res.data.total);
+
+      setUsers(res.data.data || []);
+      setTotal(res.data.total || 0);
     } catch (err) {
       console.error(err);
     }
@@ -47,18 +55,32 @@ const AdminPage = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (row: IUser) => {
-    if (!confirm("Delete this user?")) return;
-    await axios.delete(`${API_URL}/${row._id}`);
-    fetchUsers();
+  const handleDelete = (row: IUser) => {
+    setDeleteUser(row);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteUser?._id) return;
+
+    try {
+      await axios.delete(`${API_URL}/${deleteUser._id}`);
+      toast.success("User deleted successfully!");
+      fetchUsers();
+    } catch {
+      toast.error("Failed to delete user");
+    }
+
+    setShowDeleteModal(false);
+    setDeleteUser(null);
   };
 
   const columns: IColumn[] = [
     {
       key: "name",
       label: "Name",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
+      thClass: "w-36",
+      tdClass: "w-36",
       headerComponent: (
         <ReusableSort
           sortField={sortField}
@@ -72,8 +94,8 @@ const AdminPage = () => {
     {
       key: "email",
       label: "Email",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
+      thClass: "w-36",
+      tdClass: "w-36",
       headerComponent: (
         <ReusableSort
           sortField={sortField}
@@ -91,7 +113,7 @@ const AdminPage = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <FaPlus className="text-6xl p-2 bg-blue-600 text-white rounded-lg" />
+            <FaUserTie className="text-5xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Users"
           buttonText="Add User"
@@ -136,6 +158,16 @@ const AdminPage = () => {
           onClose={() => setIsModalOpen(false)}
           user={selectedUser}
           onSaved={fetchUsers}
+        />
+
+        <DeleteingModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          heading="Delete admin"
+          message={`Are you want to delete this "${deleteUser?.name}"?`}
+          yesText="Yes"
+          noText="No"
         />
       </div>
     </Layout>
