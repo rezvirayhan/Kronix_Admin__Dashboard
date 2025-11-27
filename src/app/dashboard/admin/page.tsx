@@ -13,7 +13,7 @@ import HeaderCard from "@/components/HeaderCard";
 import AdminModal from "@/components/AdminModal";
 import { IUser } from "@/types/IUser";
 
-const API_URL = "http://localhost:5000/api/v1/users";
+const API_URL = "http://localhost:5000/api/users";
 
 const AdminPage = () => {
   const [users, setUsers] = useState<IUser[]>([]);

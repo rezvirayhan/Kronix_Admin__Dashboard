@@ -106,7 +106,6 @@ const OurCategoryDashboard = () => {
                 key={opt._id || idx}
                 className="border p-2 border-[#cfd8e3] flex items-center gap-4 rounded"
               >
-                {/* Icon */}
                 <div className="w-16 h-16 flex-shrink-0">
                   {opt.icon ? (
                     <img
@@ -121,7 +120,6 @@ const OurCategoryDashboard = () => {
                   )}
                 </div>
 
-                {/* Text */}
                 <div className="flex flex-col gap-1">
                   <span className="font-medium">
                     {opt.option_title || "No Title"}
