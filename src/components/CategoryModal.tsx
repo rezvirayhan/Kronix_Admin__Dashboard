@@ -6,7 +6,6 @@ import { IOurCategory, IOption } from "@/types/IOurCategory";
 import { IoCloseOutline } from "react-icons/io5";
 import InputField from "./InputFilde";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   isOpen: boolean;
@@ -75,15 +74,13 @@ const CategoryModal: React.FC<Props> = ({
     updatedOptions[index][field] = value;
     setOptions(updatedOptions);
   };
+
   const handleIconChange = (index: number, file: File) => {
     const updatedOptions = [...options];
-    updatedOptions[index].icon = file.name;
+    updatedOptions[index].iconFile = file;
     setOptions(updatedOptions);
-
-    const updatedFiles = [...icons];
-    updatedFiles[index] = file;
-    setIcons(updatedFiles);
   };
+
   const handleAddOption = () => {
     setOptions([
       ...options,
@@ -107,8 +104,10 @@ const CategoryModal: React.FC<Props> = ({
   };
 
   const handleSubmit = async () => {
-    if (!categoryName || !headingTitle)
+    if (!categoryName || !headingTitle) {
       return toast.error("Please fill required fields");
+    }
+
     setLoading(true);
     const formData = new FormData();
     formData.append("category", categoryName);
@@ -119,7 +118,8 @@ const CategoryModal: React.FC<Props> = ({
     options.forEach((opt, idx) => {
       formData.append(`options[${idx}][option_title]`, opt.option_title);
       formData.append(`options[${idx}][option_subtitle]`, opt.option_subtitle);
-      if (icons[idx]) formData.append("icons", icons[idx]);
+      if (opt.iconFile) formData.append("icons", opt.iconFile);
+      else formData.append(`options[${idx}][icon]`, opt.icon);
     });
 
     try {
@@ -138,9 +138,10 @@ const CategoryModal: React.FC<Props> = ({
           position: "bottom-right",
         });
       }
+
+      resetForm();
       onSaved();
       onClose();
-      resetForm();
     } catch (err) {
       console.error(err);
       toast.error("Failed to save category", { position: "bottom-right" });
@@ -148,6 +149,7 @@ const CategoryModal: React.FC<Props> = ({
       setLoading(false);
     }
   };
+
   if (!isOpen) return null;
 
   return (
@@ -214,6 +216,7 @@ const CategoryModal: React.FC<Props> = ({
             required
           />
         </div>
+
         <h3 className="text-md font-semibold mt-2 mb-2">Options</h3>
         <div className="flex flex-col gap-4 overflow-y-auto pr-2 max-h-[45vh]">
           {options.map((opt, idx) => (
@@ -273,6 +276,7 @@ const CategoryModal: React.FC<Props> = ({
             </div>
           ))}
         </div>
+
         <button
           onClick={handleAddOption}
           className="px-3 py-1 text-xs rounded cursor-pointer border bg-green-600 text-white border-gray-400 mt-2"
@@ -282,7 +286,6 @@ const CategoryModal: React.FC<Props> = ({
 
         <button
           onClick={handleSubmit}
-          disabled={loading}
           className="px-4 py-2 mt-7 bg-[#02a6dd] text-white rounded w-full font-semibold cursor-pointer text-[14px]"
         >
           {category ? "Update" : "Save"}

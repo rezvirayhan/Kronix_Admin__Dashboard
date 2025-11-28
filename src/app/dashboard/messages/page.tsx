@@ -110,7 +110,12 @@ const EmailsPage = () => {
       render: (value: string) => {
         if (!value) return "N/A";
         const date = new Date(value);
-        return isNaN(date.getTime()) ? "Invalid Date" : date.toLocaleString();
+        if (isNaN(date.getTime())) {
+          const parsed = Date.parse(value.createdAt);
+          if (isNaN(parsed)) return "Invalid Date";
+          return new Date(parsed).toLocaleString();
+        }
+        return date.toLocaleString();
       },
     },
   ];

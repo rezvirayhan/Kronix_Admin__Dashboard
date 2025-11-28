@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -13,6 +14,7 @@ import TestimonialModal from "@/components/TestimonialModal";
 import { VscPreview } from "react-icons/vsc";
 import DeleteingModal from "@/components/DeleteingModal";
 import { toast } from "react-toastify";
+import ViewTestimonial from "@/components/ViewTestimonial";
 
 export interface ITestimonial {
   _id?: string;
@@ -33,9 +35,13 @@ const TestimonialDashboard = () => {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [sortField, setSortField] = useState("createdAt");
+
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewTestimonialId, setViewTestimonialId] = useState<string | null>(
+    null
+  );
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteTestimonial, setDeleteTestimonial] =
     useState<ITestimonial | null>(null);
@@ -85,25 +91,36 @@ const TestimonialDashboard = () => {
       toast.error("Failed to delete testimonial");
     }
   };
-
+  const handleView = (testimonial: ITestimonial) => {
+    setViewTestimonialId(testimonial._id || null);
+    setIsViewModalOpen(true);
+  };
   const columns: IColumn[] = [
     {
-      key: "image",
-      label: "Image",
-      useValue: true,
+      key: "companyLogo",
+      label: "Company Logo",
       thClass: "w-20 h-10",
+      useValue: true,
       tdClass: "w-20 h-10",
       render: (value: string) =>
         value ? (
           <img
             src={value}
-            alt="testimonial"
-            className="w-14 h-14 object-cover rounded"
+            alt="logo"
+            className="w-10 h-10 object-cover rounded"
           />
         ) : (
-          <span>No Image</span>
+          <span>No Logo</span>
         ),
     },
+    {
+      key: "companyName",
+      label: "Company Name",
+      useValue: true,
+      thClass: "w-36 h-16",
+      tdClass: "w-36 h-16",
+    },
+
     {
       key: "name",
       useValue: true,
@@ -120,50 +137,13 @@ const TestimonialDashboard = () => {
         />
       ),
     },
-    {
-      key: "title",
-      label: "Title",
-      useValue: true,
-      thClass: "w-52 h-16",
-      tdClass: "w-52 h-16",
-    },
-    {
-      key: "companyLogo",
-      label: "Company Logo",
-      thClass: "w-36 h-10",
-      useValue: true,
-      tdClass: "w-36 h-10",
-      render: (value: string) =>
-        value ? (
-          <img
-            src={value}
-            alt="logo"
-            className="w-14 h-14 object-cover rounded"
-          />
-        ) : (
-          <span>No Logo</span>
-        ),
-    },
-    {
-      key: "companyName",
-      label: "Company Name",
-      useValue: true,
-      thClass: "w-36 h-16",
-      tdClass: "w-36 h-16",
-    },
+
     {
       key: "titleReview",
       label: "Title Review",
       useValue: true,
-      thClass: "w-52 h-16",
-      tdClass: "w-52 h-16",
-    },
-    {
-      key: "reviewDescription",
-      label: "Review Description",
-      thClass: "w-80 h-16",
-      useValue: true,
-      tdClass: "w-80 h-16",
+      thClass: "w-60 h-16",
+      tdClass: "w-60 h-16",
     },
   ];
 
@@ -198,7 +178,8 @@ const TestimonialDashboard = () => {
           data={testimonials}
           noDataText="No testimonials found"
           onEdit={handleEdit}
-          onDelete={handleDeleteClick} // <-- update
+          onDelete={handleDeleteClick}
+          onView={handleView}
         />
 
         <DynamicPagination
@@ -212,14 +193,12 @@ const TestimonialDashboard = () => {
           }}
         />
 
-        {/* Add Testimonial / Edit Modal */}
         <TestimonialModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           testimonial={selectedTestimonial}
           onSaved={fetchTestimonials}
         />
-
         <DeleteingModal
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
@@ -228,6 +207,11 @@ const TestimonialDashboard = () => {
           message={`Are you sure you want to delete "${deleteTestimonial?.name}"?`}
           yesText="Yes"
           noText="No"
+        />
+        <ViewTestimonial
+          isOpen={isViewModalOpen}
+          onClose={() => setIsViewModalOpen(false)}
+          testimonialId={viewTestimonialId}
         />
       </div>
     </Layout>

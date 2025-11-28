@@ -14,6 +14,7 @@ import HeaderCard from "@/components/HeaderCard";
 import PricingModal from "@/components/PricingModal";
 import DeleteingModal from "@/components/DeleteingModal";
 import { toast } from "react-toastify";
+import ViewPricing from "@/components/ViewPricing";
 
 const PricingDashboard = () => {
   const [pricings, setPricings] = useState<IPricing[]>([]);
@@ -25,7 +26,8 @@ const PricingDashboard = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [selectedPricing, setSelectedPricing] = useState<IPricing | null>(null);
-
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewPricingId, setViewPricingId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePricing, setDeletePricing] = useState<IPricing | null>(null);
 
@@ -77,7 +79,10 @@ const PricingDashboard = () => {
       setDeletePricing(null);
     }
   };
-
+  const handleView = (pricing: IPricing) => {
+    setViewPricingId(pricing._id || null);
+    setIsViewModalOpen(true);
+  };
   const columns: IColumn[] = [
     {
       key: "pricing",
@@ -114,22 +119,7 @@ const PricingDashboard = () => {
       tdClass: "w-10 h-12",
       useValue: true,
     },
-    {
-      key: "options",
-      label: "Options",
-      thClass: "w-52 h-12",
-      tdClass: "w-52 h-12",
-      useValue: true,
-      render: (value: string[]) => (
-        <div>
-          {value.map((o, i) => (
-            <p key={i}>{o}</p>
-          ))}
-        </div>
-      ),
-    },
   ];
-
   return (
     <Layout>
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
@@ -162,6 +152,7 @@ const PricingDashboard = () => {
           noDataText="No pricing found"
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
+          onView={handleView}
         />
 
         <DynamicPagination
@@ -190,6 +181,11 @@ const PricingDashboard = () => {
           message={`Are you sure you want to delete "${deletePricing?.priceTitle}"?`}
           yesText="Yes"
           noText="No"
+        />
+        <ViewPricing
+          isOpen={isViewModalOpen}
+          onClose={() => setIsViewModalOpen(false)}
+          pricingId={viewPricingId}
         />
       </div>
     </Layout>
