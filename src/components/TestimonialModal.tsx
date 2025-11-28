@@ -73,17 +73,16 @@ const TestimonialModal: React.FC<Props> = ({
           headers: { "Content-Type": "multipart/form-data" },
         });
         toast.success("Testimonial updated successfully!", {
-          position: "top-right",
+          position: "bottom-right",
         });
       } else {
         await axios.post(API_URL, data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         toast.success("Testimonial created successfully!", {
-          position: "top-right",
+          position: "bottom-right",
         });
       }
-
       onSaved();
       onClose();
       resetForm();

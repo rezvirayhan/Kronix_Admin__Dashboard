@@ -116,7 +116,6 @@ const AdminModal: React.FC<Props> = ({ isOpen, onClose, user, onSaved }) => {
               className="border p-2 rounded w-full"
             />
           )}
-
           <button
             type="submit"
             className="px-4 py-2 mt-3 bg-[#02a6dd] text-white rounded w-full font-semibold cursor-pointer text-[14px]"

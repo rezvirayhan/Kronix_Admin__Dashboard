@@ -3,6 +3,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { IOurCategory, IOption } from "@/types/IOurCategory";
+import { IoCloseOutline } from "react-icons/io5";
+import InputField from "./InputFilde";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   isOpen: boolean;
@@ -58,35 +62,28 @@ const CategoryModal: React.FC<Props> = ({
       );
       setIcons([]);
     } else {
-      setCategoryName(categories[0]);
-      setHeadingSubtitle("");
-      setHeadingTitle("");
-      setHeadingDescription("");
-      setOptions([{ option_title: "", option_subtitle: "", icon: "" }]);
-      setIcons([]);
+      resetForm();
     }
-  }, [category]);
+  }, [category, isOpen]);
 
   const handleOptionChange = (
     index: number,
     field: keyof IOption,
     value: string
   ) => {
-    const updated = [...options];
-    updated[index][field] = value;
-    setOptions(updated);
+    const updatedOptions = [...options];
+    updatedOptions[index][field] = value;
+    setOptions(updatedOptions);
   };
-
   const handleIconChange = (index: number, file: File) => {
-    const updated = [...options];
-    updated[index].icon = file.name; // optional for preview
-    setOptions(updated);
+    const updatedOptions = [...options];
+    updatedOptions[index].icon = file.name;
+    setOptions(updatedOptions);
 
     const updatedFiles = [...icons];
     updatedFiles[index] = file;
     setIcons(updatedFiles);
   };
-
   const handleAddOption = () => {
     setOptions([
       ...options,
@@ -94,154 +91,202 @@ const CategoryModal: React.FC<Props> = ({
     ]);
     setIcons([...icons, new File([], "")]);
   };
+
   const handleRemoveOption = (index: number) => {
     setOptions(options.filter((_, i) => i !== index));
     setIcons(icons.filter((_, i) => i !== index));
   };
 
+  const resetForm = () => {
+    setCategoryName(categories[0]);
+    setHeadingSubtitle("");
+    setHeadingTitle("");
+    setHeadingDescription("");
+    setOptions([{ option_title: "", option_subtitle: "", icon: "" }]);
+    setIcons([]);
+  };
+
   const handleSubmit = async () => {
     if (!categoryName || !headingTitle)
-      return alert("Please fill required fields");
+      return toast.error("Please fill required fields");
     setLoading(true);
+    const formData = new FormData();
+    formData.append("category", categoryName);
+    formData.append("heading_subtitle", headingSubtitle);
+    formData.append("heading_title", headingTitle);
+    formData.append("heading_description", headingDescription);
+
+    options.forEach((opt, idx) => {
+      formData.append(`options[${idx}][option_title]`, opt.option_title);
+      formData.append(`options[${idx}][option_subtitle]`, opt.option_subtitle);
+      if (icons[idx]) formData.append("icons", icons[idx]);
+    });
 
     try {
-      const formData = new FormData();
-      formData.append("category", categoryName);
-      formData.append("heading_subtitle", headingSubtitle);
-      formData.append("heading_title", headingTitle);
-      formData.append("heading_description", headingDescription);
-
-      options.forEach((opt, idx) => {
-        formData.append(`options[${idx}][option_title]`, opt.option_title);
-        formData.append(
-          `options[${idx}][option_subtitle]`,
-          opt.option_subtitle
-        );
-        if (icons[idx]) {
-          formData.append("icons", icons[idx]); // backend expects "icons" array
-        }
-      });
-
       if (category?._id) {
         await axios.put(`${API}/${category._id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
+        });
+        toast.success("Category updated successfully!", {
+          position: "bottom-right",
         });
       } else {
         await axios.post(API, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        toast.success("Category saved successfully!", {
+          position: "bottom-right",
+        });
       }
-
       onSaved();
       onClose();
+      resetForm();
     } catch (err) {
       console.error(err);
-      alert("Failed to save category");
+      toast.error("Failed to save category", { position: "bottom-right" });
     } finally {
       setLoading(false);
     }
   };
-
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 w-full max-w-lg rounded shadow-lg overflow-y-auto max-h-[90vh]">
-        <h2 className="text-2xl font-bold mb-4">
-          {category?._id ? "Edit Category" : "Add Category"}
-        </h2>
+    <div className="fixed inset-0 bg-[#333333ec] flex items-center justify-center z-50 overflow-scroll">
+      <div className="bg-[#e8ebf0] p-6 w-1/2 rounded shadow-lg">
+        <div className="flex justify-between">
+          <h2 className="text-lg font-medium mb-6">
+            {category?._id ? "Edit Category" : "Add Category"}
+          </h2>
+          <button type="button" onClick={onClose}>
+            <IoCloseOutline className="text-xl cursor-pointer" />
+          </button>
+        </div>
 
-        <select
-          value={categoryName}
-          onChange={(e) => setCategoryName(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        >
-          {categories.map((c) => (
-            <option key={c} value={c}>
-              {c}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="text"
-          placeholder="Heading Subtitle"
-          value={headingSubtitle}
-          onChange={(e) => setHeadingSubtitle(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-        <input
-          type="text"
-          placeholder="Heading Title"
-          value={headingTitle}
-          onChange={(e) => setHeadingTitle(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-        <textarea
-          placeholder="Heading Description"
-          value={headingDescription}
-          onChange={(e) => setHeadingDescription(e.target.value)}
-          className="w-full mb-2 p-2 border rounded"
-        />
-
-        <h3 className="mt-2 font-bold">Options</h3>
-        {options.map((opt, idx) => (
-          <div key={idx} className="mb-2 border p-2 rounded">
-            <input
-              type="text"
-              placeholder="Option Title"
-              value={opt.option_title}
-              onChange={(e) =>
-                handleOptionChange(idx, "option_title", e.target.value)
-              }
-              className="w-full mb-1 p-1 border rounded"
+        <div className="flex justify-between gap-5">
+          <div className="w-full">
+            <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+              Category <span className="text-red-600">*</span>
+            </label>
+            <InputField
+              as="select"
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+              options={categories}
+              placeholder="Select Category"
+              required
             />
-            <input
-              type="text"
-              placeholder="Option Subtitle"
-              value={opt.option_subtitle}
-              onChange={(e) =>
-                handleOptionChange(idx, "option_subtitle", e.target.value)
-              }
-              className="w-full mb-1 p-1 border rounded"
-            />
-            <input
-              type="file"
-              onChange={(e) =>
-                e.target.files && handleIconChange(idx, e.target.files[0])
-              }
-              className="w-full mb-1 p-1 border rounded"
-            />
-            {options.length > 1 && (
-              <button
-                onClick={() => handleRemoveOption(idx)}
-                className="text-red-500 text-sm mt-1"
-              >
-                Remove
-              </button>
-            )}
           </div>
-        ))}
+          <div className="w-full">
+            <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+              Heading Subtitle <span className="text-red-600">*</span>
+            </label>
+            <InputField
+              type="text"
+              placeholder="Heading Subtitle"
+              value={headingSubtitle}
+              onChange={(e) => setHeadingSubtitle(e.target.value)}
+              required
+            />
+          </div>
+          <div className="w-full">
+            <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+              Heading Title <span className="text-red-600">*</span>
+            </label>
+            <InputField
+              type="text"
+              placeholder="Heading Title"
+              value={headingTitle}
+              onChange={(e) => setHeadingTitle(e.target.value)}
+              required
+            />
+          </div>
+        </div>
 
+        <div className="w-full mt-4">
+          <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+            Heading Description <span className="text-red-600">*</span>
+          </label>
+          <InputField
+            as="textarea"
+            placeholder="Heading Description"
+            value={headingDescription}
+            onChange={(e) => setHeadingDescription(e.target.value)}
+            required
+          />
+        </div>
+        <h3 className="text-md font-semibold mt-2 mb-2">Options</h3>
+        <div className="flex flex-col gap-4 overflow-y-auto pr-2 max-h-[45vh]">
+          {options.map((opt, idx) => (
+            <div
+              key={idx}
+              className="p-4 rounded-lg bg-white shadow-sm border border-gray-200"
+            >
+              <div className="flex flex-wrap gap-4 items-end">
+                <div className="flex-1 min-w-[180px]">
+                  <label className="block mb-1 text-sm font-semibold text-gray-800">
+                    Option Title
+                  </label>
+                  <InputField
+                    type="text"
+                    placeholder="Option Title"
+                    value={opt.option_title}
+                    onChange={(e) =>
+                      handleOptionChange(idx, "option_title", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="flex-1 min-w-[180px]">
+                  <label className="block mb-1 text-sm font-semibold text-gray-800">
+                    Option Subtitle
+                  </label>
+                  <InputField
+                    type="text"
+                    placeholder="Option Subtitle"
+                    value={opt.option_subtitle}
+                    onChange={(e) =>
+                      handleOptionChange(idx, "option_subtitle", e.target.value)
+                    }
+                  />
+                </div>
+                <div className="flex-1 min-w-[180px]">
+                  <label className="block mb-1 text-sm font-semibold text-gray-800">
+                    Image
+                  </label>
+                  <InputField
+                    type="file"
+                    onChange={(e) =>
+                      e.target.files && handleIconChange(idx, e.target.files[0])
+                    }
+                  />
+                </div>
+                {options.length > 1 && (
+                  <div className="mt-4">
+                    <button
+                      onClick={() => handleRemoveOption(idx)}
+                      className="px-3 py-1 text-xs rounded-full border border-red-400 text-red-500 hover:bg-red-50 transition"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
         <button
           onClick={handleAddOption}
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+          className="px-3 py-1 text-xs rounded cursor-pointer border bg-green-600 text-white border-gray-400 mt-2"
         >
           Add Option
         </button>
 
-        <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="px-4 py-2 border rounded">
-            Cancel
-          </button>
-          <button
-            onClick={handleSubmit}
-            disabled={loading}
-            className="px-4 py-2 bg-green-500 text-white rounded"
-          >
-            {loading ? "Saving..." : "Save"}
-          </button>
-        </div>
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="px-4 py-2 mt-7 bg-[#02a6dd] text-white rounded w-full font-semibold cursor-pointer text-[14px]"
+        >
+          {category ? "Update" : "Save"}
+        </button>
       </div>
     </div>
   );

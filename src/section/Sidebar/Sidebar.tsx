@@ -8,10 +8,13 @@ import { VscPreview } from "react-icons/vsc";
 import { BsPostageFill } from "react-icons/bs";
 
 import {
+  MdCategory,
   MdOutlineLibraryBooks,
   MdPhotoLibrary,
   MdPriceChange,
 } from "react-icons/md";
+import Logout from "../SignIn/Logout";
+import { IoIosNotifications } from "react-icons/io";
 
 interface SidebarItemProps {
   name: string;
@@ -89,7 +92,7 @@ const Sidebar = () => {
       name: "Category",
       icon: (
         <span className="text-2xl text-white  bg-[#00b0ea] px-1 py-1 rounded-md">
-          <MdPriceChange />
+          <MdCategory />
         </span>
       ),
       route: "/dashboard/category",
@@ -102,6 +105,15 @@ const Sidebar = () => {
         </span>
       ),
       route: "/dashboard/messages",
+    },
+    {
+      name: "Notifications ",
+      icon: (
+        <span className="text-2xl text-white  bg-[#00b0ea] px-1 py-1 rounded-md">
+          <IoIosNotifications />
+        </span>
+      ),
+      route: "/dashboard/notifications",
     },
     {
       name: "Pricing",
@@ -122,7 +134,6 @@ const Sidebar = () => {
       route: "/dashboard/blogs",
     },
   ];
-
   return (
     <aside className="fixed top-20 left-0 w-70 h-[calc(95vh-4rem)] bg-white text-white flex flex-col justify-between ml-5 mt-5">
       <ul className="space-y-2">
@@ -131,9 +142,12 @@ const Sidebar = () => {
         ))}
       </ul>
 
-      <button className="flex text-7xl items-center gap-2 text-black hover:text-red-600  rounded-lg transition">
-        <FaSignOutAlt className="text-black" /> Logout
-      </button>
+      <Logout
+        className="px-4 py-2 mt-3 bg-[#02a6dd] text-white rounded w-11/12 font-semibold cursor-pointer text-[14px] hover:bg-[#028fcf] transition"
+        redirectTo="/"
+      >
+        Logout
+      </Logout>
     </aside>
   );
 };

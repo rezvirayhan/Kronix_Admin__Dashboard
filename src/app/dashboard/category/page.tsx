@@ -7,12 +7,14 @@ import { IOurCategory } from "@/types/IOurCategory";
 import DynamicTable from "@/components/DynamicTable";
 import DynamicPagination from "@/components/DynamicPagination";
 import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
 import CategoryModal from "@/components/CategoryModal";
+import DeleteingModal from "@/components/DeleteingModal";
 import { IColumn } from "@/types/IColumn";
 import { MdCategory } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import HeaderCard from "@/components/HeaderCard";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const OurCategoryDashboard = () => {
   const [categories, setCategories] = useState<IOurCategory[]>([]);
@@ -23,8 +25,13 @@ const OurCategoryDashboard = () => {
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<IOurCategory | null>(
+    null
+  );
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteCategory, setDeleteCategory] = useState<IOurCategory | null>(
     null
   );
 
@@ -39,28 +46,40 @@ const OurCategoryDashboard = () => {
       setTotal(res.data.total || res.data.length);
     } catch (err) {
       console.error(err);
+      toast.error("Failed to fetch categories", { position: "bottom-right" });
     }
   };
 
   useEffect(() => {
     fetchCategories();
   }, [page, limit, search, sortField, sortOrder]);
-
   const handleEdit = (category: IOurCategory) => {
     setSelectedCategory(category);
-    setIsModalOpen(true);
+    setIsCategoryModalOpen(true);
+  };
+  const handleDeleteClick = (category: IOurCategory) => {
+    setDeleteCategory(category);
+    setShowDeleteModal(true);
   };
 
-  const handleDelete = async (category: IOurCategory) => {
-    if (!confirm("Are you sure you want to delete this category?")) return;
+  const confirmDelete = async () => {
+    if (!deleteCategory) return;
     try {
-      await axios.delete(`${API_URL}/${category._id}`);
+      await axios.delete(`${API_URL}/${deleteCategory._id}`);
+      toast.success(
+        `Category "${deleteCategory.category}" deleted successfully!`,
+        { position: "bottom-right" }
+      );
       fetchCategories();
     } catch (err) {
       console.error(err);
-      alert("Delete failed!");
+      toast.error("Delete failed!", { position: "bottom-right" });
+    } finally {
+      setShowDeleteModal(false);
+      setDeleteCategory(null);
     }
   };
+
   const columns: IColumn[] = [
     {
       key: "category",
@@ -98,7 +117,6 @@ const OurCategoryDashboard = () => {
       tdClass: "w-80",
       render: (row: IOurCategory) => {
         if (!row.options || row.options.length === 0) return null;
-
         return (
           <div className="flex flex-col gap-2">
             {row.options.map((opt: any, idx: number) => (
@@ -119,7 +137,6 @@ const OurCategoryDashboard = () => {
                     </div>
                   )}
                 </div>
-
                 <div className="flex flex-col gap-1">
                   <span className="font-medium">
                     {opt.option_title || "No Title"}
@@ -141,14 +158,14 @@ const OurCategoryDashboard = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <MdCategory className="text-6xl p-2 bg-green-600 text-white rounded-lg" />
+            <MdCategory className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Our Categories"
           buttonText="Add Category"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
             setSelectedCategory(null);
-            setIsModalOpen(true);
+            setIsCategoryModalOpen(true);
           }}
         />
 
@@ -167,7 +184,7 @@ const OurCategoryDashboard = () => {
           data={categories}
           noDataText="No categories found"
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
         />
 
         <DynamicPagination
@@ -182,10 +199,20 @@ const OurCategoryDashboard = () => {
         />
 
         <CategoryModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          isOpen={isCategoryModalOpen}
+          onClose={() => setIsCategoryModalOpen(false)}
           category={selectedCategory}
           onSaved={fetchCategories}
+        />
+
+        <DeleteingModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          heading="Delete Category"
+          message={`Do you want all the data of your  "${deleteCategory?.category} Category to be deleted"?`}
+          yesText="Yes"
+          noText="No"
         />
       </div>
     </Layout>

@@ -5,6 +5,7 @@ import axios from "axios";
 import { IPortfolio } from "@/types/IPortfolio";
 import InputField from "./InputFilde";
 import { IoCloseOutline } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 interface Props {
   isOpen: boolean;
@@ -44,7 +45,7 @@ const PortfolioModal: React.FC<Props> = ({
     e.preventDefault();
 
     if (!altText) {
-      alert("Alt text is required");
+      toast.error("Alt text is required", { position: "bottom-right" });
       return;
     }
 
@@ -58,22 +59,26 @@ const PortfolioModal: React.FC<Props> = ({
         await axios.put(`${API_URL}/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        toast.success("Image updated successfully!", {
+          position: "bottom-right",
+        });
       } else {
         await axios.post(API_URL, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        toast.success("Image saved successfully!", {
+          position: "bottom-right",
+        });
       }
 
       onSaved();
-
       setAltText("");
       setFile(null);
       setPreview("");
-
       onClose();
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Failed to save image");
+      toast.error("Failed to save image!", { position: "bottom-right" });
     }
   };
 
@@ -99,29 +104,34 @@ const PortfolioModal: React.FC<Props> = ({
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {preview && (
-            <img
-              src={preview}
-              alt="Preview"
-              className="w-full h-48 object-cover rounded mb-2"
-            />
-          )}
-
-          <div>
+          <div className="space-y-2">
             <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
               Image <span className="text-red-600">*</span>
             </label>
-            <InputField
-              key={preview}
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                const f = e.target.files?.[0] || null;
-                setFile(f);
-                if (f) setPreview(URL.createObjectURL(f));
-              }}
-              className="border p-2 w-full rounded"
-            />
+            <div className="border p-3 rounded w-full bg-white flex flex-col gap-3">
+              {preview && (
+                <div className="w-full flex justify-center">
+                  <div className="relative group w-28 h-28">
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="w-full h-full object-cover rounded-lg shadow-md border border-gray-200 transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                </div>
+              )}
+              <InputField
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const f = e.target.files?.[0] || null;
+                  setFile(f);
+                  if (f) setPreview(URL.createObjectURL(f));
+                }}
+                className="border p-2 w-full rounded cursor-pointer"
+                required={!image}
+              />
+            </div>
           </div>
 
           <div>

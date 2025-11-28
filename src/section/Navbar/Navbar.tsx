@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { MdDashboard } from "react-icons/md";
+import Logout from "../SignIn/Logout";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
@@ -54,9 +55,12 @@ const Navbar = () => {
             <button className="block w-full text-left px-4 py-2 hover:bg-gray-100">
               Settings
             </button>
-            <button className="block w-full text-left px-4 py-2 hover:bg-red-100 text-red-500">
+            <Logout
+              className="block w-full text-left px-4 py-2 hover:bg-red-100 text-red-500 cursor-pointer"
+              redirectTo="/"
+            >
               Logout
-            </button>
+            </Logout>
           </div>
         )}
       </div>

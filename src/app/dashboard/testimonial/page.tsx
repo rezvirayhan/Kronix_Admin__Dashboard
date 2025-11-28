@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "@/components/Layout";
@@ -9,10 +8,11 @@ import ReusableSearch from "@/components/ReusableSearch";
 import ReusableSort from "@/components/ReusableSort";
 import HeaderCard from "@/components/HeaderCard";
 import { IColumn } from "@/types/IColumn";
-import { MdPeople } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import TestimonialModal from "@/components/TestimonialModal";
 import { VscPreview } from "react-icons/vsc";
+import DeleteingModal from "@/components/DeleteingModal";
+import { toast } from "react-toastify";
 
 export interface ITestimonial {
   _id?: string;
@@ -35,6 +35,11 @@ const TestimonialDashboard = () => {
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteTestimonial, setDeleteTestimonial] =
+    useState<ITestimonial | null>(null);
+
   const [selectedTestimonial, setSelectedTestimonial] =
     useState<ITestimonial | null>(null);
 
@@ -61,14 +66,23 @@ const TestimonialDashboard = () => {
     setSelectedTestimonial(testimonial);
     setIsModalOpen(true);
   };
-  const handleDelete = async (testimonial: ITestimonial) => {
-    if (!confirm("Are you sure you want to delete this testimonial?")) return;
+
+  const handleDeleteClick = (testimonial: ITestimonial) => {
+    setDeleteTestimonial(testimonial);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteTestimonial?._id) return;
+
     try {
-      await axios.delete(`${API_URL}/${testimonial._id}`);
+      await axios.delete(`${API_URL}/${deleteTestimonial._id}`);
+      toast.success("User deleted successfully!");
+      setShowDeleteModal(false);
       fetchTestimonials();
     } catch (err) {
       console.error(err);
-      alert("Failed to delete testimonial");
+      toast.error("Failed to delete testimonial");
     }
   };
 
@@ -184,7 +198,7 @@ const TestimonialDashboard = () => {
           data={testimonials}
           noDataText="No testimonials found"
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick} // <-- update
         />
 
         <DynamicPagination
@@ -198,11 +212,22 @@ const TestimonialDashboard = () => {
           }}
         />
 
+        {/* Add Testimonial / Edit Modal */}
         <TestimonialModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           testimonial={selectedTestimonial}
           onSaved={fetchTestimonials}
+        />
+
+        <DeleteingModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          heading="Delete Testimonial"
+          message={`Are you sure you want to delete "${deleteTestimonial?.name}"?`}
+          yesText="Yes"
+          noText="No"
         />
       </div>
     </Layout>

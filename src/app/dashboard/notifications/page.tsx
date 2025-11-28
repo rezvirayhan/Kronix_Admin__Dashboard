@@ -8,20 +8,18 @@ import DynamicPagination from "@/components/DynamicPagination";
 import ReusableSearch from "@/components/ReusableSearch";
 import ReusableSort from "@/components/ReusableSort";
 import HeaderCard from "@/components/HeaderCard";
-import { MdPriceChange } from "react-icons/md";
-import { CiText } from "react-icons/ci";
+import { MdNotifications } from "react-icons/md";
 
-interface IEmail {
+interface INotification {
   _id: string;
-  name?: string;
+  name: string;
   email: string;
-  subject?: string;
-  message: string;
+  source: string;
   createdAt: string;
 }
 
-const EmailsPage = () => {
-  const [emails, setEmails] = useState<IEmail[]>([]);
+const NotificationDashboard = () => {
+  const [notifications, setNotifications] = useState<INotification[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
   const [total, setTotal] = useState(0);
@@ -30,88 +28,106 @@ const EmailsPage = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [loading, setLoading] = useState(false);
 
-  const fetchEmails = async () => {
+  const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/emails", {
+
+      const res = await axios.get("http://localhost:5000/api/bookcall", {
         params: { page, limit, search, sortField, sortOrder },
       });
-      setEmails(res.data.data);
-      setTotal(res.data.total);
+
+      const data = (res.data.data || []).map((item: any) => ({
+        _id: item._id,
+        name: item.name || "No name",
+        email: item.email || "No email",
+        source: item.source || "N/A",
+        createdAt: item.createdAt,
+      }));
+
+      setNotifications(data);
+      setTotal(res.data.total || data.length);
     } catch (err) {
       console.error("API Error:", err);
+      setNotifications([]);
+      setTotal(0);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchEmails();
+    fetchNotifications();
   }, [page, limit, search, sortField, sortOrder]);
 
-  const handleDelete = async (row: IEmail) => {
-    if (!confirm("Are you sure you want to delete this email?")) return;
+  const handleDelete = async (row: INotification) => {
+    if (!confirm("Are you sure you want to delete this notification?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/emails/${row._id}`);
-      fetchEmails();
+      await axios.delete(`http://localhost:5000/api/bookcall/${row._id}`);
+      fetchNotifications();
     } catch (err) {
       console.error("Delete Error:", err);
-      alert("Failed to delete email.");
+      alert("Failed to delete notification.");
     }
   };
 
   const columns = [
     {
-      key: "text",
+      key: "name",
       label: "Name",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "email", label: "Email" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
-    },
-    {
-      key: "userEmail",
-      label: "Email",
       thClass: "w-48 h-12",
       tdClass: "w-48 h-12",
       headerComponent: (
         <ReusableSort
           sortField={sortField}
           onSortFieldChange={setSortField}
-          sortOptions={[{ value: "userEmail", label: "Email" }]}
+          sortOptions={[{ value: "name", label: "Name" }]}
           sortOrder={sortOrder}
           onSortOrderChange={setSortOrder}
         />
       ),
     },
-
     {
-      key: "createdAt",
-      label: "Created At",
+      key: "email",
+      label: "Email",
+      thClass: "w-72 h-12",
+      tdClass: "w-72 h-12",
+    },
+    {
+      key: "source",
+      label: "Source",
       thClass: "w-36 h-12",
       tdClass: "w-36 h-12",
+      render: (row: INotification) => {
+        if (row.source === "book") {
+          return (
+            <span className="px-3 py-1 text-xs rounded border bg-green-600 text-white">
+              Book A Call
+            </span>
+          );
+        } else if (row.source === "buy") {
+          return (
+            <span className="px-3 py-1 text-xs rounded border bg-gray-600 text-white">
+              Click To Buy
+            </span>
+          );
+        } else {
+          return (
+            <span className="px-3 py-1 text-xs rounded border bg-gray-200 text-gray-800">
+              N/A
+            </span>
+          );
+        }
+      },
       headerComponent: (
         <ReusableSort
           sortField={sortField}
           onSortFieldChange={setSortField}
-          sortOptions={[{ value: "createdAt", label: "Created At" }]}
+          sortOptions={[{ value: "source", label: "Source" }]}
           sortOrder={sortOrder}
           onSortOrderChange={setSortOrder}
         />
       ),
-      render: (value: string) => {
-        if (!value) return "N/A";
-        const date = new Date(value);
-        return isNaN(date.getTime()) ? "Invalid Date" : date.toLocaleString();
-      },
     },
   ];
 
@@ -120,9 +136,9 @@ const EmailsPage = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <CiText className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
+            <MdNotifications className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
-          title="Messages"
+          title="Notifications"
         />
 
         <div className="mb-4 flex justify-end">
@@ -137,9 +153,9 @@ const EmailsPage = () => {
 
         <DynamicTable
           columns={columns}
-          data={emails}
+          data={notifications}
           isLoading={loading}
-          noDataText="No emails found"
+          noDataText="No notifications found"
           onDelete={handleDelete}
         />
 
@@ -158,4 +174,4 @@ const EmailsPage = () => {
   );
 };
 
-export default EmailsPage;
+export default NotificationDashboard;

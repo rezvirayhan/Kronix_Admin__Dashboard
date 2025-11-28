@@ -12,6 +12,8 @@ import { MdPriceChange } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import HeaderCard from "@/components/HeaderCard";
 import PricingModal from "@/components/PricingModal";
+import DeleteingModal from "@/components/DeleteingModal";
+import { toast } from "react-toastify";
 
 const PricingDashboard = () => {
   const [pricings, setPricings] = useState<IPricing[]>([]);
@@ -23,6 +25,9 @@ const PricingDashboard = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [selectedPricing, setSelectedPricing] = useState<IPricing | null>(null);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePricing, setDeletePricing] = useState<IPricing | null>(null);
 
   const fetchPricings = async () => {
     try {
@@ -45,11 +50,32 @@ const PricingDashboard = () => {
     setIsPricingModalOpen(true);
   };
 
-  const handleDelete = async (row: IPricing) => {
-    if (!confirm("Delete this pricing?")) return;
+  const handleDeleteClick = (row: IPricing) => {
+    setDeletePricing(row);
+    setShowDeleteModal(true);
+  };
 
-    await axios.delete(`http://localhost:5000/api/pricing/${row._id}`);
-    fetchPricings();
+  const confirmDelete = async () => {
+    if (!deletePricing) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/pricing/${deletePricing._id}`
+      );
+      toast.success(
+        `Pricing "${deletePricing.priceTitle}" deleted successfully!`,
+        {
+          position: "bottom-right",
+        }
+      );
+      fetchPricings();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete pricing", { position: "bottom-right" });
+    } finally {
+      setShowDeleteModal(false);
+      setDeletePricing(null);
+    }
   };
 
   const columns: IColumn[] = [
@@ -59,15 +85,6 @@ const PricingDashboard = () => {
       useValue: true,
       thClass: "w-24 h-10",
       tdClass: "w-10 h-10",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "pricing", label: "Pricing" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
     },
     {
       key: "priceTitle",
@@ -75,15 +92,6 @@ const PricingDashboard = () => {
       useValue: true,
       thClass: "w-36 h-12",
       tdClass: "w-36 h-12",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "priceTitle", label: "Price Title" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
     },
     {
       key: "pricingPackage",
@@ -110,8 +118,8 @@ const PricingDashboard = () => {
       key: "options",
       label: "Options",
       thClass: "w-52 h-12",
-      useValue: true,
       tdClass: "w-52 h-12",
+      useValue: true,
       render: (value: string[]) => (
         <div>
           {value.map((o, i) => (
@@ -153,7 +161,7 @@ const PricingDashboard = () => {
           data={pricings}
           noDataText="No pricing found"
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
         />
 
         <DynamicPagination
@@ -172,6 +180,16 @@ const PricingDashboard = () => {
           onClose={() => setIsPricingModalOpen(false)}
           pricing={selectedPricing}
           onSaved={fetchPricings}
+        />
+
+        <DeleteingModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          heading="Delete Pricing"
+          message={`Are you sure you want to delete "${deletePricing?.priceTitle}"?`}
+          yesText="Yes"
+          noText="No"
         />
       </div>
     </Layout>
