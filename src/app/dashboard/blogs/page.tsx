@@ -33,6 +33,7 @@ const BlogDashboard = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<IBlog | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const API_URL = "http://localhost:5000/api/blogs";
 
@@ -41,6 +42,8 @@ const BlogDashboard = () => {
 
   const fetchBlogs = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
@@ -48,6 +51,8 @@ const BlogDashboard = () => {
       setTotal(res.data.total || res.data.length);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -128,7 +133,7 @@ const BlogDashboard = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <MdOutlineLibraryBooks className="text-6xl p-2 bg-purple-600 text-white rounded-lg" />
+            <MdOutlineLibraryBooks className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Blogs"
           buttonText="Add Blog"
@@ -154,6 +159,7 @@ const BlogDashboard = () => {
           data={blogs}
           noDataText="No blogs found"
           onEdit={handleEdit}
+          isLoading={loading}
           onDelete={openDeleteModal}
         />
 

@@ -42,6 +42,8 @@ const TestimonialDashboard = () => {
   const [viewTestimonialId, setViewTestimonialId] = useState<string | null>(
     null
   );
+  const [loading, setLoading] = useState(true);
+
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteTestimonial, setDeleteTestimonial] =
     useState<ITestimonial | null>(null);
@@ -53,6 +55,8 @@ const TestimonialDashboard = () => {
 
   const fetchTestimonials = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
@@ -61,6 +65,8 @@ const TestimonialDashboard = () => {
       setTotal(res.data.total || res.data.length);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -179,6 +185,7 @@ const TestimonialDashboard = () => {
           noDataText="No testimonials found"
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
+          isLoading={loading}
           onView={handleView}
         />
 

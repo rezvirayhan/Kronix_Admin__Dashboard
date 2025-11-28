@@ -61,7 +61,7 @@ const DynamicPagination: React.FC<Props> = ({
           onClick={() => onPageChange(page - 1)}
           className="flex items-center justify-center"
         >
-          <GrPrevious className="text-4xl font-bold p-2 border rounded-full" />
+          <GrPrevious className="text-4xl font-bold p-2 bg-[#D1D5DB] text-[#02a6dd] border rounded-full" />
         </button>
         {generatePageNumbers().map((p, i) =>
           p === "..." ? (
@@ -76,7 +76,9 @@ const DynamicPagination: React.FC<Props> = ({
               key={p}
               onClick={() => onPageChange(Number(p))}
               className={`flex items-center justify-center font-bold p-1 px-3 border rounded-full ${
-                page === p ? "bg-black text-white" : ""
+                page === p
+                  ? "bg-[#02a6dd] text-white"
+                  : "text-[#02a6dd] bg-white"
               }`}
             >
               {p}
@@ -88,7 +90,7 @@ const DynamicPagination: React.FC<Props> = ({
           onClick={() => onPageChange(page + 1)}
           className="flex items-center justify-center"
         >
-          <GrNext className="text-4xl font-bold p-2  border rounded-full" />
+          <GrNext className="text-4xl bg-[#D1D5DB] text-[#02a6dd] font-bold p-2  border rounded-full" />
         </button>
       </div>
     </div>

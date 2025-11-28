@@ -32,9 +32,12 @@ const AdminPage = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteUser, setDeleteUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
@@ -43,6 +46,8 @@ const AdminPage = () => {
       setTotal(res.data.total || 0);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,6 +83,7 @@ const AdminPage = () => {
   const columns: IColumn[] = [
     {
       key: "name",
+      useValue: false,
       label: "Name",
       thClass: "w-36",
       tdClass: "w-36",
@@ -94,6 +100,7 @@ const AdminPage = () => {
     {
       key: "email",
       label: "Email",
+      useValue: false,
       thClass: "w-36",
       tdClass: "w-36",
       headerComponent: (
@@ -137,6 +144,7 @@ const AdminPage = () => {
         <DynamicTable
           columns={columns}
           data={users}
+          isLoading={loading}
           noDataText="No users found"
           onEdit={handleEdit}
           onDelete={handleDelete}

@@ -19,6 +19,13 @@ interface IBanner {
   buttonText: string;
   trustedText: string;
 }
+interface IColumn {
+  key: string;
+  label: string;
+  thClass?: string;
+  tdClass?: string;
+  useValue: boolean;
+}
 
 const BannerDashboard = () => {
   const [banners, setBanners] = useState<IBanner[]>([]);
@@ -30,9 +37,12 @@ const BannerDashboard = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isBannerModalOpen, setIsBannerModalOpen] = useState(false);
   const [selectedBanner, setSelectedBanner] = useState<IBanner | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchBanners = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get("http://localhost:5000/api/banners", {
         params: { page, limit, search, sortField, sortOrder },
       });
@@ -41,9 +51,10 @@ const BannerDashboard = () => {
       setTotal(res.data.total || res.data.length || 0);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchBanners();
   }, [page, limit, search, sortField, sortOrder]);
@@ -53,29 +64,39 @@ const BannerDashboard = () => {
     setIsBannerModalOpen(true);
   };
 
-  const columns = [
+  const columns: IColumn[] = [
     {
       key: "mainTitle",
       label: "Main Title",
       thClass: "w-36",
+      useValue: false,
       tdClass: "w-36",
     },
     {
       key: "highlight",
       label: "Highlight",
       thClass: "w-10",
+      useValue: false,
       tdClass: "w-10",
     },
-    { key: "subtitle", label: "Subtitle", thClass: "w-52", tdClass: "w-52" },
+    {
+      key: "subtitle",
+      label: "Subtitle",
+      thClass: "w-52",
+      tdClass: "w-52",
+      useValue: false,
+    },
     {
       key: "buttonText",
       label: "Button Text",
+      useValue: false,
       thClass: "w-24",
       tdClass: "w-24",
     },
     {
       key: "trustedText",
       label: "Trusted Text",
+      useValue: false,
       thClass: "w-44",
       tdClass: "w-44",
     },
@@ -109,6 +130,7 @@ const BannerDashboard = () => {
         <DynamicTable
           columns={columns}
           data={banners}
+          isLoading={loading}
           noDataText="No banners found"
           onEdit={handleEdit}
         />

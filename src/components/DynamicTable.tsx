@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import { IColumn } from "@/types/IColumn";
 import React from "react";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { AiFillEdit, AiOutlineDelete } from "react-icons/ai";
 import { FaEye } from "react-icons/fa";
 
@@ -9,14 +12,19 @@ interface Props {
   columns: IColumn[];
   data: any[];
   noDataText?: string;
+  isLoading?: boolean;
+  skeletonRows?: number;
   onView?: (row: any) => void;
   onEdit?: (row: any) => void;
   onDelete?: (row: any) => void;
 }
+
 const DynamicTable: React.FC<Props> = ({
   columns,
   data,
   noDataText = "No data",
+  isLoading = false,
+  skeletonRows = 5,
   onView,
   onEdit,
   onDelete,
@@ -33,12 +41,13 @@ const DynamicTable: React.FC<Props> = ({
                   col.thClass || ""
                 }`}
               >
-                <div className="flex">
+                <div className="flex items-center">
                   <span className="font-semibold text-sm">{col.label}</span>
                   {col.headerComponent && col.headerComponent}
                 </div>
               </th>
             ))}
+
             {(onView || onEdit || onDelete) && (
               <th className="border-b border-[#cfd8e3] p-3 align-middle text-right w-[140px]">
                 Actions
@@ -46,8 +55,35 @@ const DynamicTable: React.FC<Props> = ({
             )}
           </tr>
         </thead>
+
         <tbody>
-          {data.length === 0 ? (
+          {isLoading ? (
+            Array.from({ length: skeletonRows }).map((_, idx) => (
+              <tr
+                key={idx}
+                className="border-b border-[#cfd8e3] hover:bg-gray-50"
+              >
+                {columns.map((col, colIndex) => (
+                  <td
+                    key={colIndex}
+                    className="p-3 align-middle border-b border-[#cfd8e3]"
+                  >
+                    <Skeleton height={20} />
+                  </td>
+                ))}
+
+                {(onView || onEdit || onDelete) && (
+                  <td className="p-3 border-b border-[#cfd8e3] text-right">
+                    <div className="flex justify-end gap-2">
+                      <Skeleton circle width={40} height={40} />
+                      <Skeleton circle width={40} height={40} />
+                      <Skeleton circle width={40} height={40} />
+                    </div>
+                  </td>
+                )}
+              </tr>
+            ))
+          ) : data.length === 0 ? (
             <tr>
               <td
                 colSpan={
@@ -76,6 +112,7 @@ const DynamicTable: React.FC<Props> = ({
                       : row[col.key]}
                   </td>
                 ))}
+
                 {(onView || onEdit || onDelete) && (
                   <td className="border-b border-[#cfd8e3] p-2 align-middle text-right">
                     <div className="inline-flex gap-2">

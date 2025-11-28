@@ -2,9 +2,22 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Hero } from "@/app/dashboard/hero/page";
 import { IoCloseOutline } from "react-icons/io5";
 import InputField from "./InputFilde";
+import { toast } from "react-toastify";
+
+export interface HeroStep {
+  title: string;
+  description: string;
+  image: File | string | null; // File when uploading, string when existing
+}
+
+export interface Hero {
+  _id?: string;
+  mainTitle: string;
+  description: string;
+  steps: HeroStep[];
+}
 
 interface Props {
   isOpen: boolean;
@@ -27,17 +40,13 @@ const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
   });
 
   useEffect(() => {
-    if (hero) setForm(hero);
-    else
+    if (hero) {
       setForm({
-        mainTitle: "",
-        description: "",
-        steps: [
-          { title: "", description: "", image: null },
-          { title: "", description: "", image: null },
-          { title: "", description: "", image: null },
-        ],
+        mainTitle: hero.mainTitle,
+        description: hero.description,
+        steps: hero.steps.map((s) => ({ ...s })),
       });
+    }
   }, [hero]);
 
   if (!isOpen) return null;
@@ -58,15 +67,21 @@ const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
     const data = new FormData();
     data.append("mainTitle", form.mainTitle);
     data.append("description", form.description);
+
     data.append(
       "steps",
       JSON.stringify(
-        form.steps.map((s) => ({ title: s.title, description: s.description }))
+        form.steps.map((s) => ({
+          title: s.title,
+          description: s.description,
+        }))
       )
     );
 
-    form.steps.forEach((step, i) => {
-      if (step.image instanceof File) data.append("images", step.image);
+    form.steps.forEach((step, index) => {
+      if (step.image instanceof File) {
+        data.append(`stepImage_${index}`, step.image);
+      }
     });
 
     try {
@@ -74,10 +89,12 @@ const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
         await axios.put(`${API_URL}/${hero._id}`, data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        toast.success("Hero Update successfully!");
       } else {
         await axios.post(API_URL, data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
+        toast.success("Hero Update successfully!");
       }
       onSaved();
       onClose();
@@ -88,10 +105,10 @@ const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-[#333333ec] flex justify-center items-center z-50">
-      <div className="bg-[#e8ebf0] rounded-lg shadow-lg w-2/4 p-6 overflow-y-auto ">
-        <div className="flex justify-between">
-          <h2 className="text-lg font-medium mb-6">
+    <div className="fixed inset-0 bg-[#333333ec] flex justify-center items-center z-50 p-4 overflow-auto">
+      <div className="bg-[#e8ebf0] rounded-lg shadow-lg w-full md:w-2/4 p-6">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-lg font-medium">
             {hero ? "Edit Hero" : "Add Hero"}
           </h2>
           <button type="button" onClick={onClose}>
@@ -114,51 +131,76 @@ const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
             />
           </div>
 
-          <textarea
-            placeholder="Description"
-            value={form.description}
-            onChange={(e) => setForm({ ...form, description: e.target.value })}
-            required
-            className="border p-2 w-full rounded"
-          />
+          <div>
+            <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+              Description <span className="text-red-600">*</span>
+            </label>
+            <InputField
+              as="textarea"
+              placeholder="Description"
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              required
+              className="border p-2 w-full rounded resize-none h-24"
+            />
+          </div>
 
           {form.steps.map((step, index) => (
-            <div key={index} className="border p-2 rounded space-y-2">
-              <input
-                type="text"
-                placeholder={`Step ${index + 1} Title`}
-                value={step.title}
-                onChange={(e) =>
-                  handleStepChange(index, "title", e.target.value)
-                }
-                className="border p-1 w-full rounded"
-              />
-              <textarea
-                placeholder={`Step ${index + 1} Description`}
-                value={step.description}
-                onChange={(e) =>
-                  handleStepChange(index, "description", e.target.value)
-                }
-                className="border p-1 w-full rounded"
-              />
-              <input
-                type="file"
-                name="images"
-                onChange={(e) =>
-                  handleStepChange(
-                    index,
-                    "image",
-                    e.target.files ? e.target.files[0] : null
-                  )
-                }
-              />
-              {step.image && !(step.image instanceof File) && (
-                <img
-                  src={step.image as string}
-                  alt={`Step ${index + 1}`}
-                  className="w-24 h-24 object-cover"
-                />
-              )}
+            <div key={index} className=" p-4 rounded space-y-3">
+              <div className="grid grid-cols-3 gap-5">
+                <div>
+                  <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+                    Step {index + 1} Title{" "}
+                    <span className="text-red-600">*</span>
+                  </label>
+                  <InputField
+                    type="text"
+                    placeholder={`Step ${index + 1} Title`}
+                    value={step.title}
+                    onChange={(e) =>
+                      handleStepChange(index, "title", e.target.value)
+                    }
+                    required
+                    className="border p-2 w-full rounded"
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+                    Step {index + 1} Description{" "}
+                    <span className="text-red-600">*</span>
+                  </label>
+                  <InputField
+                    placeholder={`Step ${index + 1} Description`}
+                    value={step.description}
+                    onChange={(e) =>
+                      handleStepChange(index, "description", e.target.value)
+                    }
+                    required
+                    className="border p-2 w-full rounded "
+                  />
+                </div>
+
+                <div>
+                  <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
+                    Step {index + 1} Image
+                  </label>
+                  <InputField
+                    type="file"
+                    name={`stepImage_${index}`}
+                    className="border p-2 rounded"
+                    onChange={(e) =>
+                      handleStepChange(
+                        index,
+                        "image",
+                        e.target.files ? e.target.files[0] : null
+                      )
+                    }
+                  />
+                </div>
+              </div>
             </div>
           ))}
 

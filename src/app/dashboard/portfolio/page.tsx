@@ -31,16 +31,21 @@ const PortfolioDashboard = () => {
   const [deleteImage, setDeleteImage] = useState<IPortfolio | null>(null);
 
   const API_URL = "http://localhost:5000/api/images";
+  const [loading, setLoading] = useState(true);
 
   const fetchImages = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
       setImages(res.data.data || []);
       setTotal(res.data.total || res.data.length || 0);
     } catch (err) {
-      console.log(err);
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -153,6 +158,7 @@ const PortfolioDashboard = () => {
           data={images}
           noDataText="No images found"
           onEdit={handleEdit}
+          isLoading={loading}
           onDelete={openDeleteModal}
         />
 

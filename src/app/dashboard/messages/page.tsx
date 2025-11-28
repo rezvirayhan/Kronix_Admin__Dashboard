@@ -19,6 +19,15 @@ interface IEmail {
   message: string;
   createdAt: string;
 }
+interface IColumn<T> {
+  key: string;
+  label: string;
+  thClass?: string;
+  tdClass?: string;
+  useValue: boolean;
+  headerComponent?: React.ReactNode;
+  render?: (row: T) => React.ReactNode;
+}
 
 const EmailsPage = () => {
   const [emails, setEmails] = useState<IEmail[]>([]);
@@ -61,12 +70,14 @@ const EmailsPage = () => {
     }
   };
 
-  const columns = [
+  const columns: IColumn<Hero>[] = [
     {
       key: "text",
       label: "Name",
       thClass: "w-36 h-12",
       tdClass: "w-36 h-12",
+      useValue: true,
+
       headerComponent: (
         <ReusableSort
           sortField={sortField}
@@ -79,6 +90,7 @@ const EmailsPage = () => {
     },
     {
       key: "userEmail",
+      useValue: true,
       label: "Email",
       thClass: "w-48 h-12",
       tdClass: "w-48 h-12",
@@ -94,6 +106,7 @@ const EmailsPage = () => {
     },
 
     {
+      useValue: true,
       key: "createdAt",
       label: "Created At",
       thClass: "w-36 h-12",

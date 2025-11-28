@@ -13,6 +13,8 @@ import { FaPlus } from "react-icons/fa";
 import HeroModal from "@/components/HeroModal";
 import ReusableSort from "@/components/ReusableSort";
 import { BsPostageFill } from "react-icons/bs";
+import { toast } from "react-toastify";
+import DeleteingModal from "@/components/DeleteingModal";
 
 const API_URL = "http://localhost:5000/api/heroes";
 
@@ -22,13 +24,33 @@ export interface HeroStep {
   image?: string | File | null;
 }
 
-export interface Hero {
+interface Hero {
   _id?: string;
   mainTitle: string;
   description: string;
   steps: HeroStep[];
   createdAt?: string;
   updatedAt?: string;
+}
+interface IColumn<T> {
+  key: string;
+  label: string;
+  thClass?: string;
+  tdClass?: string;
+  useValue: boolean;
+  headerComponent?: React.ReactNode;
+  render?: (row: T) => React.ReactNode;
+}
+export interface HeroStep {
+  title: string;
+  description: string;
+  image: string | File | null;
+}
+
+interface Hero {
+  mainTitle: string;
+  subTitle?: string;
+  steps: HeroStep[];
 }
 
 const HeroDashboard = () => {
@@ -41,16 +63,25 @@ const HeroDashboard = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteHero, setDeleteHero] = useState<Hero | null>(null);
 
   const fetchHeroes = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
+
       setHeroes(res.data.data || []);
       setTotal(res.data.total || 0);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -63,22 +94,32 @@ const HeroDashboard = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (hero: Hero) => {
-    if (!confirm("Are you sure you want to delete this hero?")) return;
+  const handleDeleteClick = (hero: Hero) => {
+    setDeleteHero(hero);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!deleteHero?._id) return;
     try {
-      await axios.delete(`${API_URL}/${hero._id}`);
+      await axios.delete(`${API_URL}/${deleteHero._id}`);
+      toast.success(`Hero "${deleteHero.mainTitle}" deleted successfully!`);
+      setShowDeleteModal(false);
+      setDeleteHero(null);
       fetchHeroes();
     } catch (err) {
       console.error(err);
-      alert("Failed to delete hero");
+      toast.error("Failed to delete hero");
     }
   };
 
-  const columns = [
+  const columns: IColumn<Hero>[] = [
     {
       key: "mainTitle",
       label: "Main Title",
       thClass: "w-40",
+      useValue: false,
+
       tdClass: "w-40",
       headerComponent: (
         <ReusableSort
@@ -93,6 +134,7 @@ const HeroDashboard = () => {
     },
     {
       key: "description",
+      useValue: false,
       label: "Description",
       thClass: "w-60",
       tdClass: "w-60",
@@ -107,10 +149,10 @@ const HeroDashboard = () => {
       ),
       render: (row: Hero) => row.description || null,
     },
-
     {
       key: "steps",
       label: "Steps",
+      useValue: false,
       thClass: "w-80",
       tdClass: "w-80",
       render: (row: Hero) => {
@@ -175,10 +217,11 @@ const HeroDashboard = () => {
 
         <DynamicTable
           columns={columns}
+          isLoading={loading}
           data={heroes}
           noDataText="No heroes found"
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
         />
 
         <DynamicPagination
@@ -197,6 +240,16 @@ const HeroDashboard = () => {
           onClose={() => setIsModalOpen(false)}
           hero={selectedHero}
           onSaved={fetchHeroes}
+        />
+
+        <DeleteingModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          heading="Delete Hero"
+          message={`Are you sure you want to delete "${deleteHero?.mainTitle}"?`}
+          yesText="Yes"
+          noText="No"
         />
       </div>
     </Layout>

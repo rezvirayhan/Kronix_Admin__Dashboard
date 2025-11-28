@@ -30,9 +30,12 @@ const PricingDashboard = () => {
   const [viewPricingId, setViewPricingId] = useState<string | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deletePricing, setDeletePricing] = useState<IPricing | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchPricings = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get("http://localhost:5000/api/pricing", {
         params: { page, limit, search, sortField, sortOrder },
       });
@@ -40,6 +43,8 @@ const PricingDashboard = () => {
       setTotal(res.data.total);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -153,6 +158,7 @@ const PricingDashboard = () => {
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
           onView={handleView}
+          isLoading={loading}
         />
 
         <DynamicPagination
