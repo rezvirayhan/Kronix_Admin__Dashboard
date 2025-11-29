@@ -7,7 +7,6 @@ import InputField from "./InputFilde";
 import { IoCloseOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 interface Props {
   isOpen: boolean;
   onClose: () => void;
