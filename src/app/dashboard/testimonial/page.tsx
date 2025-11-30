@@ -10,11 +10,11 @@ import ReusableSort from "@/app/components/ReusableSort";
 import HeaderCard from "@/app/components/HeaderCard";
 import { IColumn } from "@/app/types/IColumn";
 import { FaPlus } from "react-icons/fa";
-import TestimonialModal from "@/app/components/TestimonialModal";
 import { VscPreview } from "react-icons/vsc";
 import DeleteingModal from "@/app/components/DeleteingModal";
 import { toast } from "react-toastify";
 import ViewTestimonial from "@/app/components/ViewTestimonial";
+import TestimonialModal from "@/app/section/TestimonialModal";
 
 export interface ITestimonial {
   _id?: string;

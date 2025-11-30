@@ -9,12 +9,12 @@ import ReusableSearch from "@/app/components/ReusableSearch";
 import ReusableSort from "@/app/components/ReusableSort";
 import HeaderCard from "@/app/components/HeaderCard";
 import DeleteingModal from "@/app/components/DeleteingModal";
-import PortfolioModal from "@/app/components/PortfolioModal";
 import { IColumn } from "@/app/types/IColumn";
 import { IPortfolio } from "@/app/types/IPortfolio";
 import { MdPhotoLibrary } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
+import PortfolioModal from "@/app/section/PortfolioModal";
 
 const PortfolioDashboard = () => {
   const [images, setImages] = useState<IPortfolio[]>([]);

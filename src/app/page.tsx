@@ -1,7 +1,7 @@
 "use client";
 
-import Login from "@/app/section/SignIn/Login";
 import { useRouter } from "next/navigation";
+import Login from "./section/Login";
 
 export default function LoginPage() {
   const router = useRouter();

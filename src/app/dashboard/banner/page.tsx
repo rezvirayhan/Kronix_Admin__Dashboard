@@ -5,11 +5,11 @@ import Layout from "@/app/components/Layout";
 import DynamicTable from "@/app/components/DynamicTable";
 import DynamicPagination from "@/app/components/DynamicPagination";
 import ReusableSearch from "@/app/components/ReusableSearch";
-import BannerModal from "@/app/components/BannerModal";
 import { FaPlus } from "react-icons/fa";
 import HeaderCard from "@/app/components/HeaderCard";
 import { MdPriceChange } from "react-icons/md";
 import ReusableSort from "@/app/components/ReusableSort";
+import BannerModal from "@/app/section/BannerModal";
 
 interface IBanner {
   _id?: string;

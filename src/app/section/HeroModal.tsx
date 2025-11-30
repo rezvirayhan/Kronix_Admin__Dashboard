@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { IoCloseOutline } from "react-icons/io5";
-import InputField from "./InputFilde";
+import InputField from "../components/InputFilde";
+
 import { toast } from "react-toastify";
 
 export interface HeroStep {

@@ -7,7 +7,6 @@ import { IOurCategory } from "@/app/types/IOurCategory";
 import DynamicTable from "@/app/components/DynamicTable";
 import DynamicPagination from "@/app/components/DynamicPagination";
 import ReusableSearch from "@/app/components/ReusableSearch";
-import CategoryModal from "@/app/components/CategoryModal";
 import DeleteingModal from "@/app/components/DeleteingModal";
 import { IColumn } from "@/app/types/IColumn";
 import { MdCategory } from "react-icons/md";
@@ -16,6 +15,7 @@ import HeaderCard from "@/app/components/HeaderCard";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ViewCategory from "@/app/components/ViewCategory";
+import CategoryModal from "@/app/section/CategoryModal";
 
 const OurCategoryDashboard = () => {
   const [categories, setCategories] = useState<IOurCategory[]>([]);

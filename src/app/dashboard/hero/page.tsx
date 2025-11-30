@@ -10,11 +10,11 @@ import ReusableSearch from "@/app/components/ReusableSearch";
 import HeaderCard from "@/app/components/HeaderCard";
 import { MdPeople } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import HeroModal from "@/app/components/HeroModal";
 import ReusableSort from "@/app/components/ReusableSort";
 import { BsPostageFill } from "react-icons/bs";
 import { toast } from "react-toastify";
 import DeleteingModal from "@/app/components/DeleteingModal";
+import HeroModal from "@/app/section/HeroModal";
 
 const API_URL = "http://localhost:5000/api/works";
 

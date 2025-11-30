@@ -3,10 +3,10 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { FaRegCircleUser } from "react-icons/fa6";
 import { MdDashboard } from "react-icons/md";
-import Logout from "../SignIn/Logout";
 import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import Logout from "../section/Logout";
 
 interface IUser {
   name: string;

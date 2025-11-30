@@ -11,9 +11,9 @@ import HeaderCard from "@/app/components/HeaderCard";
 import { IColumn } from "@/app/types/IColumn";
 import { MdOutlineLibraryBooks } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import { BlogModal } from "@/app/components/BlogModal";
 import DeleteingModal from "@/app/components/DeleteingModal";
 import { toast } from "react-toastify";
+import { BlogModal } from "@/app/section/BlogModal";
 export interface IBlog {
   _id?: string;
   title: string;

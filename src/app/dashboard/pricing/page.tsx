@@ -11,10 +11,10 @@ import { IColumn } from "@/app/types/IColumn";
 import { MdPriceChange } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import HeaderCard from "@/app/components/HeaderCard";
-import PricingModal from "@/app/components/PricingModal";
 import DeleteingModal from "@/app/components/DeleteingModal";
 import { toast } from "react-toastify";
 import ViewPricing from "@/app/components/ViewPricing";
+import PricingModal from "@/app/section/PricingModal";
 
 const PricingDashboard = () => {
   const [pricings, setPricings] = useState<IPricing[]>([]);

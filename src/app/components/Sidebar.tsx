@@ -8,15 +8,13 @@ import { VscPreview } from "react-icons/vsc";
 import { BsPostageFill } from "react-icons/bs";
 import { MdMiscellaneousServices } from "react-icons/md";
 import { FaCartArrowDown } from "react-icons/fa";
+import Logout from "../section/Logout";
 
 import {
-  MdCategory,
   MdOutlineLibraryBooks,
   MdPhotoLibrary,
   MdPriceChange,
 } from "react-icons/md";
-import Logout from "../SignIn/Logout";
-import { IoIosNotifications } from "react-icons/io";
 
 interface SidebarItemProps {
   name: string;

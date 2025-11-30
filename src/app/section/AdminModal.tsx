@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { IUser } from "@/app/types/IUser";
-import InputField from "./InputFilde";
 import { IoCloseOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
+import InputField from "../components/InputFilde";
 
 interface Props {
   isOpen: boolean;

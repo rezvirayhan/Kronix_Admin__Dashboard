@@ -1,8 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import InputField from "./InputFilde";
 import { IoCloseOutline } from "react-icons/io5";
+import InputField from "../components/InputFilde";
 
 interface IBanner {
   _id?: string;
