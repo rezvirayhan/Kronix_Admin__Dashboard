@@ -32,9 +32,10 @@ const NotificationDashboard = () => {
     try {
       setLoading(true);
 
-      const res = await axios.get("http://localhost:5000/api/bookcall", {
+      const res = await axios.get("http://localhost:5000/api/order", {
         params: { page, limit, search, sortField, sortOrder },
       });
+      console.log(res);
 
       const data = (res.data.data || []).map((item: any) => ({
         _id: item._id,
@@ -63,7 +64,7 @@ const NotificationDashboard = () => {
     if (!confirm("Are you sure you want to delete this notification?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/bookcall/${row._id}`);
+      await axios.delete(`http://localhost:5000/api/order/${row._id}`);
       fetchNotifications();
     } catch (err) {
       console.error("Delete Error:", err);

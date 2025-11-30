@@ -197,7 +197,6 @@ const HeroDashboard = () => {
             <BsPostageFill className="text-5xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Heroes"
-          buttonText="Add Hero"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
             setSelectedHero(null);
@@ -222,17 +221,6 @@ const HeroDashboard = () => {
           noDataText="No heroes found"
           onEdit={handleEdit}
           onDelete={handleDeleteClick}
-        />
-
-        <DynamicPagination
-          page={page}
-          limit={limit}
-          total={total}
-          onPageChange={setPage}
-          onLimitChange={(newLimit) => {
-            setLimit(newLimit);
-            setPage(1);
-          }}
         />
 
         <HeroModal
