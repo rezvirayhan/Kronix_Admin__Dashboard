@@ -1,21 +1,21 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Layout from "@/components/Layout";
+import Layout from "@/app/components/Layout";
 import axios from "axios";
-import { IOurCategory } from "@/types/IOurCategory";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import CategoryModal from "@/components/CategoryModal";
-import DeleteingModal from "@/components/DeleteingModal";
-import { IColumn } from "@/types/IColumn";
+import { IOurCategory } from "@/app/types/IOurCategory";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import CategoryModal from "@/app/components/CategoryModal";
+import DeleteingModal from "@/app/components/DeleteingModal";
+import { IColumn } from "@/app/types/IColumn";
 import { MdCategory } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import HeaderCard from "@/components/HeaderCard";
+import HeaderCard from "@/app/components/HeaderCard";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import ViewCategory from "@/components/ViewCategory";
+import ViewCategory from "@/app/components/ViewCategory";
 
 const OurCategoryDashboard = () => {
   const [categories, setCategories] = useState<IOurCategory[]>([]);

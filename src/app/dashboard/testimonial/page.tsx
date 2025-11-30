@@ -2,19 +2,19 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import HeaderCard from "@/components/HeaderCard";
-import { IColumn } from "@/types/IColumn";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import HeaderCard from "@/app/components/HeaderCard";
+import { IColumn } from "@/app/types/IColumn";
 import { FaPlus } from "react-icons/fa";
-import TestimonialModal from "@/components/TestimonialModal";
+import TestimonialModal from "@/app/components/TestimonialModal";
 import { VscPreview } from "react-icons/vsc";
-import DeleteingModal from "@/components/DeleteingModal";
+import DeleteingModal from "@/app/components/DeleteingModal";
 import { toast } from "react-toastify";
-import ViewTestimonial from "@/components/ViewTestimonial";
+import ViewTestimonial from "@/app/components/ViewTestimonial";
 
 export interface ITestimonial {
   _id?: string;

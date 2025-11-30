@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { IMAGES } from "@/utils/images";
-import InputField from "@/components/InputFilde";
+import InputField from "@/app/components/InputFilde";
 import Link from "next/link";
 import { toast } from "react-toastify";
 

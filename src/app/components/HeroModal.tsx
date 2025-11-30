@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 export interface HeroStep {
   title: string;
   description: string;
-  image: File | string | null; // File when uploading, string when existing
+  image: File | string | null;
 }
 
 export interface Hero {
@@ -26,7 +26,7 @@ interface Props {
   onSaved: () => void;
 }
 
-const API_URL = "http://localhost:5000/api/heroes";
+const API_URL = "http://localhost:5000/api/works";
 
 const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
   const [form, setForm] = useState<Hero>({

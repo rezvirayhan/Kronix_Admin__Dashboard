@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { IPortfolio } from "@/types/IPortfolio";
+import { IPortfolio } from "@/app/types/IPortfolio";
 import InputField from "./InputFilde";
 import { IoCloseOutline } from "react-icons/io5";
 import { toast } from "react-toastify";

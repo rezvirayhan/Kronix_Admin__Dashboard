@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import BannerModal from "@/components/BannerModal";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import BannerModal from "@/app/components/BannerModal";
 import { FaPlus } from "react-icons/fa";
-import HeaderCard from "@/components/HeaderCard";
+import HeaderCard from "@/app/components/HeaderCard";
 import { MdPriceChange } from "react-icons/md";
-import ReusableSort from "@/components/ReusableSort";
+import ReusableSort from "@/app/components/ReusableSort";
 
 interface IBanner {
   _id?: string;
@@ -43,7 +43,7 @@ const BannerDashboard = () => {
     try {
       setLoading(true);
 
-      const res = await axios.get("http://localhost:5000/api/banners", {
+      const res = await axios.get("http://localhost:5000/api/hero", {
         params: { page, limit, search, sortField, sortOrder },
       });
 
@@ -86,20 +86,6 @@ const BannerDashboard = () => {
       tdClass: "w-52",
       useValue: false,
     },
-    {
-      key: "buttonText",
-      label: "Button Text",
-      useValue: false,
-      thClass: "w-24",
-      tdClass: "w-24",
-    },
-    {
-      key: "trustedText",
-      label: "Trusted Text",
-      useValue: false,
-      thClass: "w-44",
-      tdClass: "w-44",
-    },
   ];
 
   return (
@@ -116,7 +102,6 @@ const BannerDashboard = () => {
             setIsBannerModalOpen(true);
           }}
         />
-
         <div className="mb-4 flex justify-end">
           <ReusableSearch
             value={search}

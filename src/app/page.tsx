@@ -1,6 +1,6 @@
 "use client";
 
-import Login from "@/section/SignIn/Login";
+import Login from "@/app/section/SignIn/Login";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {

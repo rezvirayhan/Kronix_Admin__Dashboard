@@ -48,12 +48,9 @@ const BannerModal: React.FC<Props> = ({ isOpen, onClose, banner, onSaved }) => {
   const handleSubmit = async () => {
     try {
       if (banner?._id) {
-        await axios.put(
-          `http://localhost:5000/api/banners/${banner._id}`,
-          form
-        );
+        await axios.put(`http://localhost:5000/api/hero/${banner._id}`, form);
       } else {
-        await axios.post("http://localhost:5000/api/banners", form);
+        await axios.post("http://localhost:5000/api/hero", form);
       }
       setForm({
         mainTitle: "",

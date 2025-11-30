@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { IUser } from "@/types/IUser";
+import { IUser } from "@/app/types/IUser";
 import InputField from "./InputFilde";
 import { IoCloseOutline } from "react-icons/io5";
 import { toast } from "react-toastify";

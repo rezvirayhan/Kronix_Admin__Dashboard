@@ -1,5 +1,5 @@
-import Navbar from "@/section/Navbar/Navbar";
-import Sidebar from "@/section/Sidebar/Sidebar";
+import Navbar from "@/app/section/Navbar/Navbar";
+import Sidebar from "@/app/section/Sidebar/Sidebar";
 import { ReactNode } from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

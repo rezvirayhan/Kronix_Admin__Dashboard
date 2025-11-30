@@ -2,13 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import HeaderCard from "@/components/HeaderCard";
-import { MdPriceChange } from "react-icons/md";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import HeaderCard from "@/app/components/HeaderCard";
 import { CiText } from "react-icons/ci";
 
 interface IEmail {
@@ -70,7 +69,7 @@ const EmailsPage = () => {
     }
   };
 
-  const columns: IColumn<Hero>[] = [
+  const columns: IColumn<IEmail>[] = [
     {
       key: "text",
       label: "Name",

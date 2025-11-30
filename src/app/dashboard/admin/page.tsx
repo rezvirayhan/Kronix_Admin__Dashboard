@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import { IColumn } from "@/types/IColumn";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import { IColumn } from "@/app/types/IColumn";
 import { FaPlus } from "react-icons/fa";
-import HeaderCard from "@/components/HeaderCard";
-import AdminModal from "@/components/AdminModal";
-import { IUser } from "@/types/IUser";
+import HeaderCard from "@/app/components/HeaderCard";
+import AdminModal from "@/app/components/AdminModal";
+import { IUser } from "@/app/types/IUser";
 import { toast } from "react-toastify";
-import DeleteingModal from "@/components/DeleteingModal";
+import DeleteingModal from "@/app/components/DeleteingModal";
 import { FaUserTie } from "react-icons/fa6";
 
 const API_URL = "http://localhost:5000/api/users";

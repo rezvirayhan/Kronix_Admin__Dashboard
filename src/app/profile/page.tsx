@@ -2,11 +2,11 @@
 
 import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
-import Layout from "@/components/Layout";
+import Layout from "@/app/components/Layout";
 import { FaUserAlt } from "react-icons/fa";
 import axios from "axios";
 import { IoCloseOutline } from "react-icons/io5";
-import InputField from "@/components/InputFilde";
+import InputField from "@/app/components/InputFilde";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 

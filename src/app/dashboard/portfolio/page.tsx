@@ -2,16 +2,16 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import HeaderCard from "@/components/HeaderCard";
-import DeleteingModal from "@/components/DeleteingModal";
-import PortfolioModal from "@/components/PortfolioModal";
-import { IColumn } from "@/types/IColumn";
-import { IPortfolio } from "@/types/IPortfolio";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import HeaderCard from "@/app/components/HeaderCard";
+import DeleteingModal from "@/app/components/DeleteingModal";
+import PortfolioModal from "@/app/components/PortfolioModal";
+import { IColumn } from "@/app/types/IColumn";
+import { IPortfolio } from "@/app/types/IPortfolio";
 import { MdPhotoLibrary } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { toast } from "react-toastify";

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { IPricing } from "@/types/IPricing";
+import { IPricing } from "@/app/types/IPricing";
 import InputField from "./InputFilde";
 import { IoCloseOutline } from "react-icons/io5";
 import { toast } from "react-toastify";

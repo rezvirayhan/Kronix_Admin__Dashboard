@@ -2,17 +2,17 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import HeaderCard from "@/components/HeaderCard";
-import { IColumn } from "@/types/IColumn";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import HeaderCard from "@/app/components/HeaderCard";
+import { IColumn } from "@/app/types/IColumn";
 import { MdOutlineLibraryBooks } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import { BlogModal } from "@/components/BlogModal";
-import DeleteingModal from "@/components/DeleteingModal";
+import { BlogModal } from "@/app/components/BlogModal";
+import DeleteingModal from "@/app/components/DeleteingModal";
 import { toast } from "react-toastify";
 export interface IBlog {
   _id?: string;

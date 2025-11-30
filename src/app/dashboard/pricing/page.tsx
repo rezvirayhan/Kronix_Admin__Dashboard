@@ -1,20 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import { IPricing } from "@/types/IPricing";
-import { IColumn } from "@/types/IColumn";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import { IPricing } from "@/app/types/IPricing";
+import { IColumn } from "@/app/types/IColumn";
 import { MdPriceChange } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import HeaderCard from "@/components/HeaderCard";
-import PricingModal from "@/components/PricingModal";
-import DeleteingModal from "@/components/DeleteingModal";
+import HeaderCard from "@/app/components/HeaderCard";
+import PricingModal from "@/app/components/PricingModal";
+import DeleteingModal from "@/app/components/DeleteingModal";
 import { toast } from "react-toastify";
-import ViewPricing from "@/components/ViewPricing";
+import ViewPricing from "@/app/components/ViewPricing";
 
 const PricingDashboard = () => {
   const [pricings, setPricings] = useState<IPricing[]>([]);

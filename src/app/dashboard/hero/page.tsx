@@ -3,25 +3,24 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import HeaderCard from "@/components/HeaderCard";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import HeaderCard from "@/app/components/HeaderCard";
 import { MdPeople } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import HeroModal from "@/components/HeroModal";
-import ReusableSort from "@/components/ReusableSort";
+import HeroModal from "@/app/components/HeroModal";
+import ReusableSort from "@/app/components/ReusableSort";
 import { BsPostageFill } from "react-icons/bs";
 import { toast } from "react-toastify";
-import DeleteingModal from "@/components/DeleteingModal";
+import DeleteingModal from "@/app/components/DeleteingModal";
 
-const API_URL = "http://localhost:5000/api/heroes";
+const API_URL = "http://localhost:5000/api/works";
 
 export interface HeroStep {
   title: string;
   description: string;
-  image?: string | File | null;
 }
 
 interface Hero {
@@ -197,6 +196,7 @@ const HeroDashboard = () => {
             <BsPostageFill className="text-5xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Heroes"
+          buttonText="Add Workd"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
             setSelectedHero(null);
