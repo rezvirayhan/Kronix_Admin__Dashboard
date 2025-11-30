@@ -15,6 +15,7 @@ import {
   MdPhotoLibrary,
   MdPriceChange,
 } from "react-icons/md";
+import { FiMail } from "react-icons/fi";
 
 interface SidebarItemProps {
   name: string;
@@ -101,7 +102,7 @@ const Sidebar = () => {
       name: "Messages",
       icon: (
         <span className="text-2xl text-white  bg-[#00b0ea] px-1 py-1 rounded-md">
-          <CiText />
+          <FiMail />
         </span>
       ),
       route: "/dashboard/messages",

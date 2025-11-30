@@ -16,8 +16,6 @@ import DeleteingModal from "@/app/components/DeleteingModal";
 import { FaUserTie } from "react-icons/fa6";
 import AdminModal from "@/app/section/AdminModal";
 
-const API_URL = "http://localhost:5000/api/users";
-
 const AdminPage = () => {
   const [users, setUsers] = useState<IUser[]>([]);
   const [page, setPage] = useState(1);
@@ -34,6 +32,7 @@ const AdminPage = () => {
   const [deleteUser, setDeleteUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const API_URL = "http://localhost:5000/api/users";
   const fetchUsers = async () => {
     try {
       setLoading(true);

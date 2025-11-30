@@ -7,6 +7,7 @@ import { FaUser, FaCog, FaSignOutAlt } from "react-icons/fa";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Logout from "../section/Logout";
+import Link from "next/link";
 
 interface IUser {
   name: string;
@@ -51,10 +52,12 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 w-full h-20 bg-[#f8fafc] flex justify-between items-center px-6 z-50 border-b border-[#019ee2]">
-      <div className="flex items-center space-x-2">
-        <MdDashboard size={36} color="#019ee2" />
-        <h1 className="text-lg font-semibold text-gray-700">Dashboard</h1>
-      </div>
+      <Link href="/dashboard">
+        <div className="flex items-center space-x-2">
+          <MdDashboard size={36} color="#019ee2" />
+          <h1 className="text-lg font-semibold text-gray-700">Dashboard</h1>
+        </div>
+      </Link>
 
       <div className="relative">
         <FaRegCircleUser

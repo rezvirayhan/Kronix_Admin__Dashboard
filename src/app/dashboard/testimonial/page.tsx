@@ -52,7 +52,6 @@ const TestimonialDashboard = () => {
     useState<ITestimonial | null>(null);
 
   const API_URL = "http://localhost:5000/api/testimonials";
-
   const fetchTestimonials = async () => {
     try {
       setLoading(true);
