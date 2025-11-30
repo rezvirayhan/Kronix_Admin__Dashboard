@@ -30,7 +30,7 @@ const PortfolioDashboard = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteImage, setDeleteImage] = useState<IPortfolio | null>(null);
 
-  const API_URL = "http://localhost:5000/api/images";
+  const API_URL = "http://localhost:5000/api/portfolio";
   const [loading, setLoading] = useState(true);
 
   const fetchImages = async () => {

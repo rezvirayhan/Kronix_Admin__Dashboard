@@ -14,7 +14,9 @@ interface Props {
   onSaved: () => void;
 }
 
-const API_URL = "http://localhost:5000/api/images";
+const API_URL = "http://localhost:5000/api/portfolio";
+
+console.log(API_URL);
 
 const PortfolioModal: React.FC<Props> = ({
   isOpen,
