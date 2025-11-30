@@ -30,8 +30,8 @@ const categories = [
   "Wireframes",
 ];
 
-const API = "http://localhost:5000/api/ctgory";
-
+const API = "http://localhost:5000/api/services";
+console.log(API);
 const CategoryModal: React.FC<Props> = ({
   isOpen,
   onClose,

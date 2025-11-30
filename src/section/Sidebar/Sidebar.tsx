@@ -6,6 +6,8 @@ import { FaSignOutAlt } from "react-icons/fa";
 import { FaUserTie } from "react-icons/fa";
 import { VscPreview } from "react-icons/vsc";
 import { BsPostageFill } from "react-icons/bs";
+import { MdMiscellaneousServices } from "react-icons/md";
+import { FaCartArrowDown } from "react-icons/fa";
 
 import {
   MdCategory,
@@ -89,13 +91,13 @@ const Sidebar = () => {
       route: "/dashboard/portfolio",
     },
     {
-      name: "Category",
+      name: "Services",
       icon: (
         <span className="text-2xl text-white  bg-[#00b0ea] px-1 py-1 rounded-md">
-          <MdCategory />
+          <MdMiscellaneousServices />
         </span>
       ),
-      route: "/dashboard/category",
+      route: "/dashboard/services",
     },
     {
       name: "Messages",
@@ -107,13 +109,13 @@ const Sidebar = () => {
       route: "/dashboard/messages",
     },
     {
-      name: "Notifications ",
+      name: "Order ",
       icon: (
         <span className="text-2xl text-white  bg-[#00b0ea] px-1 py-1 rounded-md">
-          <IoIosNotifications />
+          <FaCartArrowDown />
         </span>
       ),
-      route: "/dashboard/notifications",
+      route: "/dashboard/order",
     },
     {
       name: "Pricing",

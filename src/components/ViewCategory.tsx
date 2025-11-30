@@ -4,7 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 
-const API_URL = "http://localhost:5000/api/ctgory";
+const API_URL = "http://localhost:5000/api/services";
 
 interface Option {
   _id: string;
