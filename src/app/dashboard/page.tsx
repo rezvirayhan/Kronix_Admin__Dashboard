@@ -54,14 +54,14 @@ const MainDashboardPages = () => {
   const [loading, setLoading] = useState(false);
 
   const API_ENDPOINTS = {
-    users: "http://localhost:5000/api/users",
-    testimonials: "http://localhost:5000/api/testimonials",
-    portfolio: "http://localhost:5000/api/portfolio",
-    services: "http://localhost:5000/api/services",
-    emails: "http://localhost:5000/api/emails",
-    orders: "http://localhost:5000/api/order",
-    pricing: "http://localhost:5000/api/pricing",
-    blogs: "http://localhost:5000/api/blogs",
+    users: "https://kronix-back-end-kappa.vercel.app/api/users",
+    testimonials: "https://kronix-back-end-kappa.vercel.app/api/testimonials",
+    portfolio: "https://kronix-back-end-kappa.vercel.app/api/portfolio",
+    services: "https://kronix-back-end-kappa.vercel.app/api/services",
+    emails: "https://kronix-back-end-kappa.vercel.app/api/emails",
+    orders: "https://kronix-back-end-kappa.vercel.app/api/order",
+    pricing: "https://kronix-back-end-kappa.vercel.app/api/pricing",
+    blogs: "https://kronix-back-end-kappa.vercel.app/api/blogs",
   };
 
   const fetchData = async () => {
