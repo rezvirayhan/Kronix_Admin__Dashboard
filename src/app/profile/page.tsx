@@ -63,7 +63,7 @@ const ProfilePage = () => {
   const handleUpdate = async () => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/users/${userId}`,
+        `https://kronix-back-end-kappa.vercel.app/api/users/${userId}`,
         formData
       );
       setUser(res.data.user);
