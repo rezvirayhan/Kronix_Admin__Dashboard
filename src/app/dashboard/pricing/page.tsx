@@ -70,7 +70,7 @@ const PricingDashboard = () => {
 
     try {
       await axios.delete(
-        `http://localhost:5000/api/pricing/${deletePricing._id}`
+        `https://kronix-back-end-kappa.vercel.app/api/pricing/${deletePricing._id}`
       );
       toast.success(
         `Pricing "${deletePricing.priceTitle}" deleted successfully!`,

@@ -64,7 +64,9 @@ const EmailsPage = () => {
     if (!confirm("Are you sure you want to delete this email?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/emails/${row._id}`);
+      await axios.delete(
+        `https://kronix-back-end-kappa.vercel.app/api/emails/${row._id}`
+      );
       fetchEmails();
     } catch (err) {
       console.error("Delete Error:", err);
