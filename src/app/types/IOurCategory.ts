@@ -2,7 +2,8 @@ export interface IOption {
   option_title: string;
   option_subtitle: string;
   icon: string;
-  iconFile?: File;
+  iconFile?: File | null;
+  file?: File | null;
 }
 
 export interface IOurCategory {

@@ -5,7 +5,6 @@ import axios from "axios";
 import { IOurCategory, IOption } from "@/app/types/IOurCategory";
 import { IoCloseOutline } from "react-icons/io5";
 import InputField from "../components/InputFilde";
-
 import { toast } from "react-toastify";
 
 interface Props {
@@ -32,7 +31,7 @@ const categories = [
 ];
 
 const API = "http://localhost:5000/api/services";
-console.log(API);
+
 const CategoryModal: React.FC<Props> = ({
   isOpen,
   onClose,
@@ -44,9 +43,8 @@ const CategoryModal: React.FC<Props> = ({
   const [headingTitle, setHeadingTitle] = useState("");
   const [headingDescription, setHeadingDescription] = useState("");
   const [options, setOptions] = useState<IOption[]>([
-    { option_title: "", option_subtitle: "", icon: "" },
+    { option_title: "", option_subtitle: "", icon: "", file: null },
   ]);
-  const [icons, setIcons] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -56,11 +54,10 @@ const CategoryModal: React.FC<Props> = ({
       setHeadingTitle(category.heading_title);
       setHeadingDescription(category.heading_description);
       setOptions(
-        category.options?.map((opt) => ({ ...opt, icon: "" })) || [
-          { option_title: "", option_subtitle: "", icon: "" },
+        category.options?.map((opt) => ({ ...opt, iconFile: null })) || [
+          { option_title: "", option_subtitle: "", icon: "", file: null },
         ]
       );
-      setIcons([]);
     } else {
       resetForm();
     }
@@ -69,30 +66,32 @@ const CategoryModal: React.FC<Props> = ({
   const handleOptionChange = (
     index: number,
     field: keyof IOption,
-    value: string
+    value: string | File | null
   ) => {
     const updatedOptions = [...options];
-    updatedOptions[index][field] = value;
+
+    if (field === "file" || field === "iconFile") {
+      updatedOptions[index][field] = value instanceof File ? value : null;
+    } else {
+      updatedOptions[index][field] = value as string;
+    }
+
     setOptions(updatedOptions);
   };
 
   const handleIconChange = (index: number, file: File) => {
-    const updatedOptions = [...options];
-    updatedOptions[index].iconFile = file;
-    setOptions(updatedOptions);
+    handleOptionChange(index, "iconFile", file);
   };
 
   const handleAddOption = () => {
     setOptions([
       ...options,
-      { option_title: "", option_subtitle: "", icon: "" },
+      { option_title: "", option_subtitle: "", icon: "", file: null },
     ]);
-    setIcons([...icons, new File([], "")]);
   };
 
   const handleRemoveOption = (index: number) => {
     setOptions(options.filter((_, i) => i !== index));
-    setIcons(icons.filter((_, i) => i !== index));
   };
 
   const resetForm = () => {
@@ -100,8 +99,9 @@ const CategoryModal: React.FC<Props> = ({
     setHeadingSubtitle("");
     setHeadingTitle("");
     setHeadingDescription("");
-    setOptions([{ option_title: "", option_subtitle: "", icon: "" }]);
-    setIcons([]);
+    setOptions([
+      { option_title: "", option_subtitle: "", icon: "", file: null },
+    ]);
   };
 
   const handleSubmit = async () => {
@@ -139,7 +139,6 @@ const CategoryModal: React.FC<Props> = ({
           position: "bottom-right",
         });
       }
-
       resetForm();
       onSaved();
       onClose();
@@ -165,6 +164,7 @@ const CategoryModal: React.FC<Props> = ({
           </button>
         </div>
 
+        {/* Category and headings */}
         <div className="flex justify-between gap-5">
           <div className="w-full">
             <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
@@ -258,9 +258,11 @@ const CategoryModal: React.FC<Props> = ({
                   </label>
                   <InputField
                     type="file"
-                    onChange={(e) =>
-                      e.target.files && handleIconChange(idx, e.target.files[0])
-                    }
+                    onChange={(e) => {
+                      const target = e.target as HTMLInputElement;
+                      if (target.files?.[0])
+                        handleIconChange(idx, target.files[0]);
+                    }}
                   />
                 </div>
                 {options.length > 1 && (

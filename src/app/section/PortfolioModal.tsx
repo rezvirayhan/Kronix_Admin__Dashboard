@@ -125,9 +125,9 @@ const PortfolioModal: React.FC<Props> = ({
               )}
               <InputField
                 type="file"
-                accept="image/*"
                 onChange={(e) => {
-                  const f = e.target.files?.[0] || null;
+                  const target = e.target as HTMLInputElement;
+                  const f = target.files?.[0] || null;
                   setFile(f);
                   if (f) setPreview(URL.createObjectURL(f));
                 }}

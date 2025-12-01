@@ -150,7 +150,8 @@ export const BlogModal: React.FC<Props> = ({
               <InputField
                 type="file"
                 onChange={(e) => {
-                  const file = e.target.files ? e.target.files[0] : null;
+                  const target = e.target as HTMLInputElement;
+                  const file = target.files ? target.files[0] : null;
                   setImageFile(file);
                   if (file) setPreviewImage(URL.createObjectURL(file));
                 }}

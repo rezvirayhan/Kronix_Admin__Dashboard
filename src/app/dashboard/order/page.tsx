@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import ReusableSearch from "@/app/components/ReusableSearch";
 import ReusableSort from "@/app/components/ReusableSort";
 import HeaderCard from "@/app/components/HeaderCard";
 import { MdNotifications } from "react-icons/md";
+import { IColumn } from "@/app/types/IColumn";
 
 interface INotification {
   _id: string;
@@ -72,9 +74,10 @@ const NotificationDashboard = () => {
     }
   };
 
-  const columns = [
+  const columns: IColumn[] = [
     {
       key: "name",
+      useValue: false,
       label: "Name",
       thClass: "w-48 h-12",
       tdClass: "w-48 h-12",
@@ -91,10 +94,12 @@ const NotificationDashboard = () => {
     {
       key: "email",
       label: "Email",
+      useValue: false,
       thClass: "w-72 h-12",
       tdClass: "w-72 h-12",
     },
     {
+      useValue: false,
       key: "source",
       label: "Source",
       thClass: "w-36 h-12",

@@ -103,35 +103,7 @@ const EmailsPage = () => {
         />
       ),
     },
-
-    {
-      useValue: true,
-      key: "createdAt",
-      label: "Created At",
-      thClass: "w-36 h-12",
-      tdClass: "w-36 h-12",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "createdAt", label: "Created At" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
-      render: (value: string) => {
-        if (!value) return "N/A";
-        const date = new Date(value);
-        if (isNaN(date.getTime())) {
-          const parsed = Date.parse(value.createdAt);
-          if (isNaN(parsed)) return "Invalid Date";
-          return new Date(parsed).toLocaleString();
-        }
-        return date.toLocaleString();
-      },
-    },
   ];
-
   return (
     <Layout>
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">

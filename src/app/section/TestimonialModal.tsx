@@ -175,9 +175,10 @@ const TestimonialModal: React.FC<Props> = ({
               </label>
               <InputField
                 type="file"
-                onChange={(e) =>
-                  setCompanyLogoFile(e.target.files ? e.target.files[0] : null)
-                }
+                onChange={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  setCompanyLogoFile(target.files?.[0] ?? null);
+                }}
               />
             </div>
             <div className="w-full">
@@ -187,7 +188,11 @@ const TestimonialModal: React.FC<Props> = ({
               <InputField
                 type="file"
                 onChange={(e) =>
-                  setImageFile(e.target.files ? e.target.files[0] : null)
+                  setImageFile(
+                    (e.target as HTMLInputElement).files
+                      ? (e.target as HTMLInputElement).files![0]
+                      : null
+                  )
                 }
               />
             </div>

@@ -196,7 +196,7 @@ const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
                       handleStepChange(
                         index,
                         "image",
-                        e.target.files ? e.target.files[0] : null
+                        (e.target as HTMLInputElement).files?.[0] ?? null
                       )
                     }
                   />
