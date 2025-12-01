@@ -1,17 +1,14 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import InputField from "./InputFilde";
 import { IoCloseOutline } from "react-icons/io5";
-import { toast } from "react-toastify";
+import InputField from "../components/InputFilde";
 
 interface IBanner {
   _id?: string;
   mainTitle: string;
   highlight: string;
   subtitle: string;
-  buttonText: string;
-  trustedText: string;
 }
 
 interface Props {
@@ -26,8 +23,6 @@ const BannerModal: React.FC<Props> = ({ isOpen, onClose, banner, onSaved }) => {
     mainTitle: "",
     highlight: "",
     subtitle: "",
-    buttonText: "",
-    trustedText: "",
   });
 
   useEffect(() => {
@@ -36,16 +31,12 @@ const BannerModal: React.FC<Props> = ({ isOpen, onClose, banner, onSaved }) => {
         mainTitle: banner.mainTitle || "",
         highlight: banner.highlight || "",
         subtitle: banner.subtitle || "",
-        buttonText: banner.buttonText || "",
-        trustedText: banner.trustedText || "",
       });
     } else if (isOpen) {
       setForm({
         mainTitle: "",
         highlight: "",
         subtitle: "",
-        buttonText: "",
-        trustedText: "",
       });
     }
   }, [banner, isOpen]);
@@ -58,18 +49,19 @@ const BannerModal: React.FC<Props> = ({ isOpen, onClose, banner, onSaved }) => {
     try {
       if (banner?._id) {
         await axios.put(
-          `http://localhost:5000/api/banners/${banner._id}`,
+          `https://kronix-back-end-kappa.vercel.app/api/hero/${banner._id}`,
           form
         );
       } else {
-        await axios.post("http://localhost:5000/api/banners", form);
+        await axios.post(
+          "https://kronix-back-end-kappa.vercel.app/api/hero",
+          form
+        );
       }
       setForm({
         mainTitle: "",
         highlight: "",
         subtitle: "",
-        buttonText: "",
-        trustedText: "",
       });
       onSaved();
       onClose();
@@ -122,33 +114,10 @@ const BannerModal: React.FC<Props> = ({ isOpen, onClose, banner, onSaved }) => {
         </label>
         <InputField
           type="text"
+          as="textarea"
           placeholder="Subtitle"
           value={form.subtitle}
           onChange={(e) => updateField("subtitle", e.target.value)}
-          required
-          className="border p-2 rounded w-full"
-        />
-
-        <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
-          Button Text <span className="text-red-600">*</span>
-        </label>
-        <InputField
-          type="text"
-          placeholder="Button Text"
-          value={form.buttonText}
-          onChange={(e) => updateField("buttonText", e.target.value)}
-          required
-          className="border p-2 rounded w-full"
-        />
-
-        <label className="block mb-1.5 text-[#020817] text-sm font-semibold">
-          Trusted Text <span className="text-red-600">*</span>
-        </label>
-        <InputField
-          type="text"
-          placeholder="Trusted Text"
-          value={form.trustedText}
-          onChange={(e) => updateField("trustedText", e.target.value)}
           required
           className="border p-2 rounded w-full"
         />

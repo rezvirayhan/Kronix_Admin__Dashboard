@@ -1,17 +1,20 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import { IPricing } from "@/types/IPricing";
-import { IColumn } from "@/types/IColumn";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import { IPricing } from "@/app/types/IPricing";
+import { IColumn } from "@/app/types/IColumn";
 import { MdPriceChange } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import HeaderCard from "@/components/HeaderCard";
-import PricingModal from "@/components/PricingModal";
+import HeaderCard from "@/app/components/HeaderCard";
+import DeleteingModal from "@/app/components/DeleteingModal";
+import { toast } from "react-toastify";
+import ViewPricing from "@/app/components/ViewPricing";
+import PricingModal from "@/app/section/PricingModal";
 
 const PricingDashboard = () => {
   const [pricings, setPricings] = useState<IPricing[]>([]);
@@ -23,16 +26,28 @@ const PricingDashboard = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isPricingModalOpen, setIsPricingModalOpen] = useState(false);
   const [selectedPricing, setSelectedPricing] = useState<IPricing | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [viewPricingId, setViewPricingId] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePricing, setDeletePricing] = useState<IPricing | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchPricings = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/pricing", {
-        params: { page, limit, search, sortField, sortOrder },
-      });
+      setLoading(true);
+
+      const res = await axios.get(
+        "https://kronix-back-end-kappa.vercel.app/api/pricing",
+        {
+          params: { page, limit, search, sortField, sortOrder },
+        }
+      );
       setPricings(res.data.data);
       setTotal(res.data.total);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -45,13 +60,37 @@ const PricingDashboard = () => {
     setIsPricingModalOpen(true);
   };
 
-  const handleDelete = async (row: IPricing) => {
-    if (!confirm("Delete this pricing?")) return;
-
-    await axios.delete(`http://localhost:5000/api/pricing/${row._id}`);
-    fetchPricings();
+  const handleDeleteClick = (row: IPricing) => {
+    setDeletePricing(row);
+    setShowDeleteModal(true);
   };
 
+  const confirmDelete = async () => {
+    if (!deletePricing) return;
+
+    try {
+      await axios.delete(
+        `http://localhost:5000/api/pricing/${deletePricing._id}`
+      );
+      toast.success(
+        `Pricing "${deletePricing.priceTitle}" deleted successfully!`,
+        {
+          position: "bottom-right",
+        }
+      );
+      fetchPricings();
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to delete pricing", { position: "bottom-right" });
+    } finally {
+      setShowDeleteModal(false);
+      setDeletePricing(null);
+    }
+  };
+  const handleView = (pricing: IPricing) => {
+    setViewPricingId(pricing._id || null);
+    setIsViewModalOpen(true);
+  };
   const columns: IColumn[] = [
     {
       key: "pricing",
@@ -59,15 +98,6 @@ const PricingDashboard = () => {
       useValue: true,
       thClass: "w-24 h-10",
       tdClass: "w-10 h-10",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "pricing", label: "Pricing" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
     },
     {
       key: "priceTitle",
@@ -75,15 +105,6 @@ const PricingDashboard = () => {
       useValue: true,
       thClass: "w-36 h-12",
       tdClass: "w-36 h-12",
-      headerComponent: (
-        <ReusableSort
-          sortField={sortField}
-          onSortFieldChange={setSortField}
-          sortOptions={[{ value: "priceTitle", label: "Price Title" }]}
-          sortOrder={sortOrder}
-          onSortOrderChange={setSortOrder}
-        />
-      ),
     },
     {
       key: "pricingPackage",
@@ -106,22 +127,7 @@ const PricingDashboard = () => {
       tdClass: "w-10 h-12",
       useValue: true,
     },
-    {
-      key: "options",
-      label: "Options",
-      thClass: "w-52 h-12",
-      useValue: true,
-      tdClass: "w-52 h-12",
-      render: (value: string[]) => (
-        <div>
-          {value.map((o, i) => (
-            <p key={i}>{o}</p>
-          ))}
-        </div>
-      ),
-    },
   ];
-
   return (
     <Layout>
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
@@ -153,7 +159,9 @@ const PricingDashboard = () => {
           data={pricings}
           noDataText="No pricing found"
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
+          onView={handleView}
+          isLoading={loading}
         />
 
         <DynamicPagination
@@ -172,6 +180,21 @@ const PricingDashboard = () => {
           onClose={() => setIsPricingModalOpen(false)}
           pricing={selectedPricing}
           onSaved={fetchPricings}
+        />
+
+        <DeleteingModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          heading="Delete Pricing"
+          message={`Are you sure you want to delete "${deletePricing?.priceTitle}"?`}
+          yesText="Yes"
+          noText="No"
+        />
+        <ViewPricing
+          isOpen={isViewModalOpen}
+          onClose={() => setIsViewModalOpen(false)}
+          pricingId={viewPricingId}
         />
       </div>
     </Layout>

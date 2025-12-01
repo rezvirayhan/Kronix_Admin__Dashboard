@@ -2,21 +2,19 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import { IColumn } from "@/types/IColumn";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import { IColumn } from "@/app/types/IColumn";
 import { FaPlus } from "react-icons/fa";
-import HeaderCard from "@/components/HeaderCard";
-import AdminModal from "@/components/AdminModal";
-import { IUser } from "@/types/IUser";
+import HeaderCard from "@/app/components/HeaderCard";
+import { IUser } from "@/app/types/IUser";
 import { toast } from "react-toastify";
-import DeleteingModal from "@/components/DeleteingModal";
+import DeleteingModal from "@/app/components/DeleteingModal";
 import { FaUserTie } from "react-icons/fa6";
-
-const API_URL = "http://localhost:5000/api/users";
+import AdminModal from "@/app/section/AdminModal";
 
 const AdminPage = () => {
   const [users, setUsers] = useState<IUser[]>([]);
@@ -32,9 +30,13 @@ const AdminPage = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteUser, setDeleteUser] = useState<IUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
+  const API_URL = "https://kronix-back-end-kappa.vercel.app/api/users";
   const fetchUsers = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
@@ -43,6 +45,8 @@ const AdminPage = () => {
       setTotal(res.data.total || 0);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -78,6 +82,7 @@ const AdminPage = () => {
   const columns: IColumn[] = [
     {
       key: "name",
+      useValue: false,
       label: "Name",
       thClass: "w-36",
       tdClass: "w-36",
@@ -94,6 +99,7 @@ const AdminPage = () => {
     {
       key: "email",
       label: "Email",
+      useValue: false,
       thClass: "w-36",
       tdClass: "w-36",
       headerComponent: (
@@ -137,6 +143,7 @@ const AdminPage = () => {
         <DynamicTable
           columns={columns}
           data={users}
+          isLoading={loading}
           noDataText="No users found"
           onEdit={handleEdit}
           onDelete={handleDelete}

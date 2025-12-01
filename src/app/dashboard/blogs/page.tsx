@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import HeaderCard from "@/components/HeaderCard";
-import { IColumn } from "@/types/IColumn";
-
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import HeaderCard from "@/app/components/HeaderCard";
+import { IColumn } from "@/app/types/IColumn";
 import { MdOutlineLibraryBooks } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import { BlogModal } from "@/components/BlogModal";
-
+import DeleteingModal from "@/app/components/DeleteingModal";
+import { toast } from "react-toastify";
+import { BlogModal } from "@/app/section/BlogModal";
 export interface IBlog {
   _id?: string;
   title: string;
@@ -33,11 +33,17 @@ const BlogDashboard = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState<IBlog | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const API_URL = "http://localhost:5000/api/blogs";
+  const API_URL = "https://kronix-back-end-kappa.vercel.app/api/blogs";
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteBlog, setDeleteBlog] = useState<IBlog | null>(null);
 
   const fetchBlogs = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
@@ -45,6 +51,8 @@ const BlogDashboard = () => {
       setTotal(res.data.total || res.data.length);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,15 +65,22 @@ const BlogDashboard = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (blog: IBlog) => {
-    if (!confirm("Are you sure you want to delete this blog?")) return;
-    const id = blog._id;
+  const openDeleteModal = (blog: IBlog) => {
+    setDeleteBlog(blog);
+    setShowDeleteModal(true);
+  };
+  const confirmDelete = async () => {
+    if (!deleteBlog?._id) return;
+
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await axios.delete(`${API_URL}/${deleteBlog._id}`);
+      toast.success("Blog deleted successfully!");
+      setShowDeleteModal(false);
+      setDeleteBlog(null);
       fetchBlogs();
     } catch (err) {
       console.error(err);
-      alert("Failed to delete blog");
+      alert("Failed to delete blog!");
     }
   };
 
@@ -76,11 +91,10 @@ const BlogDashboard = () => {
       useValue: false,
       thClass: "w-32 h-16",
       tdClass: "w-32 h-16",
-      render: (row: Hero) => {
-        const value = row.image;
-        return value ? (
+      render: (row: IBlog) => {
+        return row.image ? (
           <img
-            src={value}
+            src={row.image}
             alt="preview"
             className="w-24 h-24 object-cover rounded"
           />
@@ -107,8 +121,8 @@ const BlogDashboard = () => {
     },
     {
       key: "subtitle",
-      useValue: false,
       label: "Subtitle",
+      useValue: false,
       thClass: "w-48 h-16",
       tdClass: "w-48 h-16",
     },
@@ -119,7 +133,7 @@ const BlogDashboard = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <MdOutlineLibraryBooks className="text-6xl p-2 bg-purple-600 text-white rounded-lg" />
+            <MdOutlineLibraryBooks className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Blogs"
           buttonText="Add Blog"
@@ -145,7 +159,8 @@ const BlogDashboard = () => {
           data={blogs}
           noDataText="No blogs found"
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          isLoading={loading}
+          onDelete={openDeleteModal}
         />
 
         <DynamicPagination
@@ -164,6 +179,15 @@ const BlogDashboard = () => {
           onClose={() => setIsModalOpen(false)}
           blog={selectedBlog}
           onSaved={fetchBlogs}
+        />
+        <DeleteingModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          heading="Delete Blog"
+          message={`Are you sure you want to delete "${deleteBlog?.title}"?`}
+          yesText="Yes"
+          noText="No"
         />
       </div>
     </Layout>

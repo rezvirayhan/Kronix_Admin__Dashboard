@@ -2,17 +2,19 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import HeaderCard from "@/components/HeaderCard";
-import { IColumn } from "@/types/IColumn";
-import { IPortfolio } from "@/types/IPortfolio";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import ReusableSort from "@/app/components/ReusableSort";
+import HeaderCard from "@/app/components/HeaderCard";
+import DeleteingModal from "@/app/components/DeleteingModal";
+import { IColumn } from "@/app/types/IColumn";
+import { IPortfolio } from "@/app/types/IPortfolio";
 import { MdPhotoLibrary } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import PortfolioModal from "@/components/PortfolioModal";
+import { toast } from "react-toastify";
+import PortfolioModal from "@/app/section/PortfolioModal";
 
 const PortfolioDashboard = () => {
   const [images, setImages] = useState<IPortfolio[]>([]);
@@ -25,18 +27,24 @@ const PortfolioDashboard = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<IPortfolio | null>(null);
 
-  const API_URL = "http://localhost:5000/api/images";
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteImage, setDeleteImage] = useState<IPortfolio | null>(null);
 
+  const [loading, setLoading] = useState(true);
+  const API_URL = "https://kronix-back-end-kappa.vercel.app/api/portfolio";
   const fetchImages = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
-
-      setImages(res.data.data);
-      setTotal(res.data.total);
+      setImages(res.data.data || []);
+      setTotal(res.data.total || res.data.length || 0);
     } catch (err) {
-      console.log(err);
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,13 +57,31 @@ const PortfolioDashboard = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (image: IPortfolio) => {
-    const id = image._id || image.id;
-    if (!confirm("Delete this image?")) return;
-
-    await axios.delete(`${API_URL}/${id}`);
-    fetchImages();
+  const openDeleteModal = (image: IPortfolio) => {
+    setDeleteImage(image);
+    setShowDeleteModal(true);
   };
+
+  const confirmDelete = async () => {
+    if (!deleteImage?._id) return;
+    try {
+      await axios.delete(`${API_URL}/${deleteImage._id}`);
+      toast.success("Image deleted successfully!", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+      setShowDeleteModal(false);
+      setDeleteImage(null);
+      fetchImages();
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to delete image!", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
   const columns: IColumn[] = [
     {
       key: "imageUrl",
@@ -131,7 +157,8 @@ const PortfolioDashboard = () => {
           data={images}
           noDataText="No images found"
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          isLoading={loading}
+          onDelete={openDeleteModal}
         />
 
         <DynamicPagination
@@ -150,6 +177,16 @@ const PortfolioDashboard = () => {
           onClose={() => setIsModalOpen(false)}
           image={selectedImage}
           onSaved={fetchImages}
+        />
+
+        <DeleteingModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          heading="Delete Image"
+          message={`Are you sure you want to delete "${deleteImage?.alt}"?`}
+          yesText="Yes"
+          noText="No"
         />
       </div>
     </Layout>

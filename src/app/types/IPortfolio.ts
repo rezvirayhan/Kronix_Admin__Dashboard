@@ -1,5 +1,6 @@
 export interface IPortfolio {
   id?: string;
+  _id?: string;
   imageUrl: string;
   publicId: string;
   alt: string;

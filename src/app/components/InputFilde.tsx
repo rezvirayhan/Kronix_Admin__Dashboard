@@ -7,11 +7,13 @@ interface InputFieldProps {
   id?: string;
   name?: string;
   type?: string;
-  as?: "input" | "textarea"; // support textarea
+  as?: "input" | "textarea" | "select";
   placeholder?: string;
   value?: string | File | null;
   onChange?: (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => void;
   required?: boolean;
   disabled?: boolean;
@@ -19,6 +21,8 @@ interface InputFieldProps {
   labelColor?: string;
   textColor?: string;
   placeholderColor?: string;
+
+  options?: string[];
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -36,6 +40,8 @@ const InputField: React.FC<InputFieldProps> = ({
   labelColor = "text-gray-700",
   textColor = "text-gray-900",
   placeholderColor = "placeholder-gray-400",
+
+  options = [],
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
@@ -58,13 +64,33 @@ const InputField: React.FC<InputFieldProps> = ({
       )}
 
       <div className="relative">
-        {as === "textarea" ? (
+        {as === "select" ? (
+          <select
+            id={id}
+            name={name}
+            value={value as string | undefined}
+            onChange={onChange as React.ChangeEventHandler<HTMLSelectElement>}
+            required={required}
+            disabled={disabled}
+            className={`${baseClasses} h-10`}
+          >
+            <option value="" disabled>
+              {placeholder || "Select option"}
+            </option>
+
+            {options.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        ) : as === "textarea" ? (
           <textarea
             id={id}
             name={name}
-            placeholder={placeholder}
             value={value as string | undefined}
             onChange={onChange as React.ChangeEventHandler<HTMLTextAreaElement>}
+            placeholder={placeholder}
             required={required}
             disabled={disabled}
             className={`${baseClasses} h-24 resize-none`}
@@ -74,9 +100,9 @@ const InputField: React.FC<InputFieldProps> = ({
             id={id}
             name={name}
             type={isPassword && showPassword ? "text" : type}
-            placeholder={placeholder}
             value={value as string | undefined}
             onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
+            placeholder={placeholder}
             required={required}
             disabled={disabled}
             autoComplete="off"
@@ -90,7 +116,7 @@ const InputField: React.FC<InputFieldProps> = ({
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute inset-y-0 right-3 flex items-center text-black text-sm hover:text-gray-700"
+            className="absolute inset-y-0 right-3 flex items-center text-black text-sm hover:text-gray-700 cursor-pointer"
           >
             {showPassword ? "Hide" : "Show"}
           </button>

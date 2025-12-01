@@ -1,13 +1,13 @@
 "use client";
 
-import Login from "@/section/SignIn/Login";
 import { useRouter } from "next/navigation";
+import Login from "./section/Login";
 
 export default function LoginPage() {
   const router = useRouter();
 
   const handleLogin = () => {
-    router.push("/dashboard/admin");
+    router.push("/dashboard");
   };
 
   return (

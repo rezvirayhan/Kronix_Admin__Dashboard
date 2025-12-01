@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout";
+import Layout from "@/app/components/Layout";
 import { FaUsers } from "react-icons/fa";
 
 export default function UserPage() {

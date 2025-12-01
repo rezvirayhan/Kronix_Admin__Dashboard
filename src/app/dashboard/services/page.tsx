@@ -1,18 +1,21 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Layout from "@/components/Layout";
+import Layout from "@/app/components/Layout";
 import axios from "axios";
-import { IOurCategory } from "@/types/IOurCategory";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import ReusableSort from "@/components/ReusableSort";
-import CategoryModal from "@/components/CategoryModal";
-import { IColumn } from "@/types/IColumn";
+import { IOurCategory } from "@/app/types/IOurCategory";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
+import DeleteingModal from "@/app/components/DeleteingModal";
+import { IColumn } from "@/app/types/IColumn";
 import { MdCategory } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
-import HeaderCard from "@/components/HeaderCard";
+import HeaderCard from "@/app/components/HeaderCard";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import ViewCategory from "@/app/components/ViewCategory";
+import CategoryModal from "@/app/section/CategoryModal";
 
 const OurCategoryDashboard = () => {
   const [categories, setCategories] = useState<IOurCategory[]>([]);
@@ -23,15 +26,27 @@ const OurCategoryDashboard = () => {
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<IOurCategory | null>(
     null
   );
+  const [selectedPricing, setSelectedPricing] = useState<IOurCategory | null>(
+    null
+  );
+  const [viewCategoryId, setViewCategoryId] = useState<string | null>(null);
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteCategory, setDeleteCategory] = useState<IOurCategory | null>(
+    null
+  );
 
-  const API_URL = "http://localhost:5000/api/ctgory";
+  const API_URL = "https://kronix-back-end-kappa.vercel.app/api/services";
+  const [loading, setLoading] = useState(true);
 
   const fetchCategories = async () => {
     try {
+      setLoading(true);
+
       const res = await axios.get(API_URL, {
         params: { page, limit, search, sortField, sortOrder },
       });
@@ -39,27 +54,43 @@ const OurCategoryDashboard = () => {
       setTotal(res.data.total || res.data.length);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchCategories();
   }, [page, limit, search, sortField, sortOrder]);
-
   const handleEdit = (category: IOurCategory) => {
     setSelectedCategory(category);
-    setIsModalOpen(true);
+    setIsCategoryModalOpen(true);
+  };
+  const handleDeleteClick = (category: IOurCategory) => {
+    setDeleteCategory(category);
+    setShowDeleteModal(true);
   };
 
-  const handleDelete = async (category: IOurCategory) => {
-    if (!confirm("Are you sure you want to delete this category?")) return;
+  const confirmDelete = async () => {
+    if (!deleteCategory) return;
     try {
-      await axios.delete(`${API_URL}/${category._id}`);
+      await axios.delete(`${API_URL}/${deleteCategory._id}`);
+      toast.success(
+        `Category "${deleteCategory.category}" deleted successfully!`,
+        { position: "bottom-right" }
+      );
       fetchCategories();
     } catch (err) {
       console.error(err);
-      alert("Delete failed!");
+      toast.error("Delete failed!", { position: "bottom-right" });
+    } finally {
+      setShowDeleteModal(false);
+      setDeleteCategory(null);
     }
+  };
+  const handleView = (category: IOurCategory) => {
+    setViewCategoryId(category._id || null);
+    setIsViewModalOpen(true);
   };
   const columns: IColumn[] = [
     {
@@ -90,50 +121,6 @@ const OurCategoryDashboard = () => {
       thClass: "w-80",
       tdClass: "w-80",
     },
-    {
-      key: "options",
-      label: "Options",
-      useValue: false,
-      thClass: "w-80",
-      tdClass: "w-80",
-      render: (row: IOurCategory) => {
-        if (!row.options || row.options.length === 0) return null;
-
-        return (
-          <div className="flex flex-col gap-2">
-            {row.options.map((opt: any, idx: number) => (
-              <div
-                key={opt._id || idx}
-                className="border p-2 border-[#cfd8e3] flex items-center gap-4 rounded"
-              >
-                <div className="w-16 h-16 flex-shrink-0">
-                  {opt.icon ? (
-                    <img
-                      src={opt.icon}
-                      alt={opt.option_title || "icon"}
-                      className="w-full h-full object-cover rounded-full"
-                    />
-                  ) : (
-                    <div className="w-full h-full bg-gray-200 rounded-full flex items-center justify-center text-gray-400">
-                      No Icon
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-1">
-                  <span className="font-medium">
-                    {opt.option_title || "No Title"}
-                  </span>
-                  <span className="text-gray-500">
-                    {opt.option_subtitle || "No Subtitle"}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        );
-      },
-    },
   ];
 
   return (
@@ -141,14 +128,14 @@ const OurCategoryDashboard = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <MdCategory className="text-6xl p-2 bg-green-600 text-white rounded-lg" />
+            <MdCategory className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Our Categories"
           buttonText="Add Category"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
             setSelectedCategory(null);
-            setIsModalOpen(true);
+            setIsCategoryModalOpen(true);
           }}
         />
 
@@ -165,9 +152,11 @@ const OurCategoryDashboard = () => {
         <DynamicTable
           columns={columns}
           data={categories}
+          isLoading={loading}
           noDataText="No categories found"
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDelete={handleDeleteClick}
+          onView={handleView}
         />
 
         <DynamicPagination
@@ -182,10 +171,26 @@ const OurCategoryDashboard = () => {
         />
 
         <CategoryModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          isOpen={isCategoryModalOpen}
+          onClose={() => setIsCategoryModalOpen(false)}
           category={selectedCategory}
           onSaved={fetchCategories}
+        />
+
+        <DeleteingModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          heading="Delete Category"
+          message={`Do you want all the data of your  "${deleteCategory?.category} Category to be deleted"?`}
+          yesText="Yes"
+          noText="No"
+        />
+
+        <ViewCategory
+          isOpen={isViewModalOpen}
+          onClose={() => setIsViewModalOpen(false)}
+          categoryId={viewCategoryId}
         />
       </div>
     </Layout>

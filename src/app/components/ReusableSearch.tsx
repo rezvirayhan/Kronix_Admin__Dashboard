@@ -37,7 +37,7 @@ const ReusableSearch: React.FC<Props> = ({
 
         <button
           onClick={handleClear}
-          className="bg-[#00b0ea] text-white px-4 py-2 rounded-r hover:bg-[#0b6988] transition cursor-pointer"
+          className="bg-[#00b0ea] text-white px-4 py-2 rounded-r hover:bg-[#0b6988] transition cursor-pointer rounded-lg"
         >
           Clear All
         </button>

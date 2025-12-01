@@ -1,10 +1,10 @@
 "use client";
-
 import React, { useState } from "react";
 import Image from "next/image";
 import { IMAGES } from "@/utils/images";
-import InputField from "@/components/InputFilde";
+import InputField from "@/app/components/InputFilde";
 import Link from "next/link";
+import { toast } from "react-toastify";
 
 const Login = ({ onLogin }: { onLogin: () => void }) => {
   const [email, setEmail] = useState("");
@@ -29,23 +29,38 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
 
       if (!res.ok) {
         setError(data.message || "Login failed");
+        toast.error(data.message || "Login failed", {
+          position: "bottom-right",
+        });
       } else {
         if (data.token) localStorage.setItem("authToken", data.token);
-        alert("Login successful");
+        toast.success("Login successful", {
+          position: "bottom-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+
         onLogin();
       }
     } catch (err) {
       setError("Something went wrong");
       console.log(err);
+      toast.error("Something went wrong", {
+        position: "bottom-right",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="">
-      <div className="flex flex-col md:flex-row items-center justify-center min-h-screen ">
-        <div className="flex w-full md:w-[1050px] h-[400px] shadow-2xl rounded-xl overflow-hidden">
+    <div>
+      <div className="flex flex-col md:flex-row items-center justify-center min-h-screen">
+        <div className="flex w-full md:w-[1020px] h-[420px] shadow-2xl rounded-xl overflow-hidden">
           <div className="w-1/2 bg-gray-500 flex justify-center items-center">
             <Image
               src={IMAGES.logo}
@@ -57,11 +72,12 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
 
           <div className="w-1/2 flex justify-center items-center bg-[#f4f4f4]">
             <div className="w-[80%]">
-              <h1 className="text-2xl font-bold mb-1 text-black">Sign in</h1>
+              <h1 className="text-2xl font-semibold mb-1 text-black">
+                Sign in
+              </h1>
               <p className="mb-5 text-[#64748B] text-sm">
                 Sign in to your account
               </p>
-
               <form onSubmit={handleSubmit}>
                 <InputField
                   label="Email"
@@ -100,7 +116,7 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
 
                 <button
                   type="submit"
-                  className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition"
+                  className="mt-6 w-full bg-[#02a6dd] text-white rounded py-3 cursor-pointer font-light text-sm hover:bg-[#0483ad] transition"
                   disabled={loading}
                 >
                   {loading ? "Logging in..." : "Login"}

@@ -1,15 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Layout from "@/components/Layout";
-import DynamicTable from "@/components/DynamicTable";
-import DynamicPagination from "@/components/DynamicPagination";
-import ReusableSearch from "@/components/ReusableSearch";
-import BannerModal from "@/components/BannerModal";
+import Layout from "@/app/components/Layout";
+import DynamicTable from "@/app/components/DynamicTable";
+import DynamicPagination from "@/app/components/DynamicPagination";
+import ReusableSearch from "@/app/components/ReusableSearch";
 import { FaPlus } from "react-icons/fa";
-import HeaderCard from "@/components/HeaderCard";
+import HeaderCard from "@/app/components/HeaderCard";
 import { MdPriceChange } from "react-icons/md";
-import ReusableSort from "@/components/ReusableSort";
+import ReusableSort from "@/app/components/ReusableSort";
+import BannerModal from "@/app/section/BannerModal";
 
 interface IBanner {
   _id?: string;
@@ -18,6 +18,13 @@ interface IBanner {
   subtitle: string;
   buttonText: string;
   trustedText: string;
+}
+interface IColumn {
+  key: string;
+  label: string;
+  thClass?: string;
+  tdClass?: string;
+  useValue: boolean;
 }
 
 const BannerDashboard = () => {
@@ -30,20 +37,27 @@ const BannerDashboard = () => {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [isBannerModalOpen, setIsBannerModalOpen] = useState(false);
   const [selectedBanner, setSelectedBanner] = useState<IBanner | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const fetchBanners = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/banners", {
-        params: { page, limit, search, sortField, sortOrder },
-      });
+      setLoading(true);
+
+      const res = await axios.get(
+        "https://kronix-back-end-kappa.vercel.app/api/hero",
+        {
+          params: { page, limit, search, sortField, sortOrder },
+        }
+      );
 
       setBanners(res.data.data || res.data);
       setTotal(res.data.total || res.data.length || 0);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
-
   useEffect(() => {
     fetchBanners();
   }, [page, limit, search, sortField, sortOrder]);
@@ -53,31 +67,27 @@ const BannerDashboard = () => {
     setIsBannerModalOpen(true);
   };
 
-  const columns = [
+  const columns: IColumn[] = [
     {
       key: "mainTitle",
       label: "Main Title",
       thClass: "w-36",
+      useValue: false,
       tdClass: "w-36",
     },
     {
       key: "highlight",
       label: "Highlight",
       thClass: "w-10",
+      useValue: false,
       tdClass: "w-10",
     },
-    { key: "subtitle", label: "Subtitle", thClass: "w-52", tdClass: "w-52" },
     {
-      key: "buttonText",
-      label: "Button Text",
-      thClass: "w-24",
-      tdClass: "w-24",
-    },
-    {
-      key: "trustedText",
-      label: "Trusted Text",
-      thClass: "w-44",
-      tdClass: "w-44",
+      key: "subtitle",
+      label: "Subtitle",
+      thClass: "w-52",
+      tdClass: "w-52",
+      useValue: false,
     },
   ];
 
@@ -95,7 +105,6 @@ const BannerDashboard = () => {
             setIsBannerModalOpen(true);
           }}
         />
-
         <div className="mb-4 flex justify-end">
           <ReusableSearch
             value={search}
@@ -109,6 +118,7 @@ const BannerDashboard = () => {
         <DynamicTable
           columns={columns}
           data={banners}
+          isLoading={loading}
           noDataText="No banners found"
           onEdit={handleEdit}
         />

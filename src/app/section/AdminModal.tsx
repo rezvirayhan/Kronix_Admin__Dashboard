@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { IUser } from "@/types/IUser";
-import InputField from "./InputFilde";
+import { IUser } from "@/app/types/IUser";
 import { IoCloseOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
+import InputField from "../components/InputFilde";
 
 interface Props {
   isOpen: boolean;
@@ -14,7 +14,7 @@ interface Props {
   onSaved: () => void;
 }
 
-const API_URL = "http://localhost:5000/api/users";
+const API_URL = "https://kronix-back-end-kappa.vercel.app/api/users";
 const AdminModal: React.FC<Props> = ({ isOpen, onClose, user, onSaved }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -65,7 +65,6 @@ const AdminModal: React.FC<Props> = ({ isOpen, onClose, user, onSaved }) => {
           <h2 className="text-lg font-medium mb-6">
             {user ? "Edit Admin" : "Add Admin"}
           </h2>
-
           <button
             type="button"
             onClick={() => {
@@ -117,7 +116,6 @@ const AdminModal: React.FC<Props> = ({ isOpen, onClose, user, onSaved }) => {
               className="border p-2 rounded w-full"
             />
           )}
-
           <button
             type="submit"
             className="px-4 py-2 mt-3 bg-[#02a6dd] text-white rounded w-full font-semibold cursor-pointer text-[14px]"
