@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { ITestimonial } from "@/app/dashboard/testimonial/page";
 
-const API_URL = "http://localhost:5000/api/testimonials";
+const API_URL = "https://kronix-back-end-kappa.vercel.app/api/testimonials";
 
 interface Props {
   isOpen: boolean;
