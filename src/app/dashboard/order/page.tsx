@@ -69,7 +69,9 @@ const NotificationDashboard = () => {
     if (!confirm("Are you sure you want to delete this notification?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/order/${row._id}`);
+      await axios.delete(
+        `https://kronix-back-end-kappa.vercel.app/api/order/${row._id}`
+      );
       fetchNotifications();
     } catch (err) {
       console.error("Delete Error:", err);
