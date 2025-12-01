@@ -38,7 +38,7 @@ const ProfilePage = () => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `http://localhost:5000/api/users/${userId}`
+          `https://kronix-back-end-kappa.vercel.app/api/users/${userId}`
         );
         setUser(res.data);
         setFormData({ name: res.data.name, email: res.data.email });
