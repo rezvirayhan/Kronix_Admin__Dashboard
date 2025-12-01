@@ -4,8 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 
-const API_URL = "http://localhost:5000/api/pricing";
-
+const API_URL = "https://kronix-back-end-kappa.vercel.app/api/pricing";
 interface Pricing {
   _id: string;
   pricingPackage: string;
