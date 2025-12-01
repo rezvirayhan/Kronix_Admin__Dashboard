@@ -32,7 +32,7 @@ const AdminPage = () => {
   const [deleteUser, setDeleteUser] = useState<IUser | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = "http://localhost:5000/api/users";
+  const API_URL = "https://kronix-back-end-kappa.vercel.app/api/users";
   const fetchUsers = async () => {
     try {
       setLoading(true);

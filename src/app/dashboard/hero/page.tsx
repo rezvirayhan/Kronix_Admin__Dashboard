@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import DeleteingModal from "@/app/components/DeleteingModal";
 import HeroModal from "@/app/section/HeroModal";
 
-const API_URL = "http://localhost:5000/api/works";
+const API_URL = "https://kronix-back-end-kappa.vercel.app/api/process";
 
 export interface HeroStep {
   title: string;
@@ -196,7 +196,6 @@ const HeroDashboard = () => {
             <BsPostageFill className="text-5xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
           title="Heroes"
-          buttonText="Add Workd"
           buttonIcon={<FaPlus />}
           onButtonClick={() => {
             setSelectedHero(null);

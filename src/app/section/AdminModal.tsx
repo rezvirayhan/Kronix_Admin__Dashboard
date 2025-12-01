@@ -14,7 +14,7 @@ interface Props {
   onSaved: () => void;
 }
 
-const API_URL = "http://localhost:5000/api/users";
+const API_URL = "https://kronix-back-end-kappa.vercel.app/api/users";
 const AdminModal: React.FC<Props> = ({ isOpen, onClose, user, onSaved }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

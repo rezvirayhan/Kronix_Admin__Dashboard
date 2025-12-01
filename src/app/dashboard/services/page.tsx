@@ -40,7 +40,7 @@ const OurCategoryDashboard = () => {
     null
   );
 
-  const API_URL = "http://localhost:5000/api/services";
+  const API_URL = "https://kronix-back-end-kappa.vercel.app/api/services";
   const [loading, setLoading] = useState(true);
 
   const fetchCategories = async () => {

@@ -41,9 +41,12 @@ const EmailsPage = () => {
   const fetchEmails = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/emails", {
-        params: { page, limit, search, sortField, sortOrder },
-      });
+      const res = await axios.get(
+        "https://kronix-back-end-kappa.vercel.app/api/emails",
+        {
+          params: { page, limit, search, sortField, sortOrder },
+        }
+      );
       setEmails(res.data.data);
       setTotal(res.data.total);
     } catch (err) {

@@ -14,7 +14,7 @@ interface Props {
   onSaved: () => void;
 }
 
-const API_URL = "http://localhost:5000/api/testimonials";
+const API_URL = "https://kronix-back-end-kappa.vercel.app/api/testimonials";
 
 const TestimonialModal: React.FC<Props> = ({
   isOpen,

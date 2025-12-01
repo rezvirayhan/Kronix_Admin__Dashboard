@@ -27,7 +27,7 @@ interface Props {
   onSaved: () => void;
 }
 
-const API_URL = "http://localhost:5000/api/works";
+const API_URL = "https://kronix-back-end-kappa.vercel.app/api/process";
 
 const HeroModal: React.FC<Props> = ({ isOpen, onClose, hero, onSaved }) => {
   const [form, setForm] = useState<Hero>({

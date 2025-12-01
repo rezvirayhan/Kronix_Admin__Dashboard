@@ -48,9 +48,15 @@ const BannerModal: React.FC<Props> = ({ isOpen, onClose, banner, onSaved }) => {
   const handleSubmit = async () => {
     try {
       if (banner?._id) {
-        await axios.put(`http://localhost:5000/api/hero/${banner._id}`, form);
+        await axios.put(
+          `https://kronix-back-end-kappa.vercel.app/api/hero/${banner._id}`,
+          form
+        );
       } else {
-        await axios.post("http://localhost:5000/api/hero", form);
+        await axios.post(
+          "https://kronix-back-end-kappa.vercel.app/api/hero",
+          form
+        );
       }
       setForm({
         mainTitle: "",

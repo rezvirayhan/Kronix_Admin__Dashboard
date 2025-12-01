@@ -35,7 +35,7 @@ const BlogDashboard = () => {
   const [selectedBlog, setSelectedBlog] = useState<IBlog | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = "http://localhost:5000/api/blogs";
+  const API_URL = "https://kronix-back-end-kappa.vercel.app/api/blogs";
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteBlog, setDeleteBlog] = useState<IBlog | null>(null);

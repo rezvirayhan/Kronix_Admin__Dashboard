@@ -12,7 +12,7 @@ interface Props {
   blog: IBlog | null;
   onSaved: () => void;
 }
-const API_URL = "http://localhost:5000/api/blogs";
+const API_URL = "https://kronix-back-end-kappa.vercel.app/api/blogs";
 export const BlogModal: React.FC<Props> = ({
   isOpen,
   onClose,

@@ -85,14 +85,17 @@ const PricingModal: React.FC<Props> = ({
 
       if (pricing?._id) {
         await axios.put(
-          `http://localhost:5000/api/pricing/${pricing._id}`,
+          `https://kronix-back-end-kappa.vercel.app/api/pricing/${pricing._id}`,
           payload
         );
         toast.success("Pricing updated successfully!", {
           position: "bottom-right",
         });
       } else {
-        await axios.post("http://localhost:5000/api/pricing", payload);
+        await axios.post(
+          "https://kronix-back-end-kappa.vercel.app/api/pricing",
+          payload
+        );
         toast.success("Pricing saved successfully!", {
           position: "bottom-right",
         });

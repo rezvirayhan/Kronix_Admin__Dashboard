@@ -51,7 +51,7 @@ const TestimonialDashboard = () => {
   const [selectedTestimonial, setSelectedTestimonial] =
     useState<ITestimonial | null>(null);
 
-  const API_URL = "http://localhost:5000/api/testimonials";
+  const API_URL = "https://kronix-back-end-kappa.vercel.app/api/testimonials";
   const fetchTestimonials = async () => {
     try {
       setLoading(true);

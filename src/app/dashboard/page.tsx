@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Layout from "@/app/components/Layout";
 import HeaderCard from "../components/HeaderCard";
+
 import {
   MdDashboard,
   MdMiscellaneousServices,
@@ -11,6 +12,10 @@ import {
   MdPriceChange,
 } from "react-icons/md";
 import { FiMail } from "react-icons/fi";
+
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -185,55 +190,81 @@ const MainDashboardPages = () => {
   return (
     <Layout>
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
-        <HeaderCard
-          icon={
-            <MdDashboard className="text-6xl p-2 bg-white text-[#019ee2] rounded-lg" />
-          }
-          title="Dashboard"
-        />
+        {loading ? (
+          <div className="flex items-center gap-4">
+            <Skeleton height={80} width={80} borderRadius={12} />
+            <div className="flex-1">
+              <Skeleton height={25} width={200} />
+              <Skeleton height={20} width={150} className="mt-2" />
+            </div>
+          </div>
+        ) : (
+          <HeaderCard
+            icon={
+              <MdDashboard className="text-6xl p-2 bg-white text-[#019ee2] rounded-lg" />
+            }
+            title="Dashboard"
+          />
+        )}
 
         <div className="grid gap-6 md:grid-cols-4 mt-6">
-          {statsData.map((card, idx) => (
-            <div
-              key={idx}
-              className={`flex items-center p-4 rounded-lg shadow-sm ${card.gradient}`}
-            >
-              <div className="flex-1">
-                <p className="text-sm text-white opacity-80">{card.title}</p>
-                <p className="text-2xl font-bold text-white">
-                  {loading ? "Loading..." : card.value}
-                </p>
-              </div>
-              <div className="text-3xl text-white ml-4 flex items-center">
-                {card.icon}
-              </div>
-            </div>
-          ))}
+          {loading
+            ? Array.from({ length: 8 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  height={100}
+                  className="rounded-lg"
+                  borderRadius={12}
+                />
+              ))
+            : statsData.map((card, idx) => (
+                <div
+                  key={idx}
+                  className={`flex items-center p-4 rounded-lg shadow-sm ${card.gradient}`}
+                >
+                  <div className="flex-1">
+                    <p className="text-sm text-white opacity-80">
+                      {card.title}
+                    </p>
+                    <p className="text-2xl font-bold text-white">
+                      {card.value}
+                    </p>
+                  </div>
+                  <div className="text-3xl text-white ml-4 flex items-center">
+                    {card.icon}
+                  </div>
+                </div>
+              ))}
         </div>
 
         <div className="flex gap-5 mt-10">
           <div className="bg-white p-6 rounded-lg shadow flex-1 h-[420px]">
             <h2 className="text-xl font-bold mb-4">Overall Data Overview</h2>
             <div className="h-[350px]">
-              <Bar data={barData} />
+              {loading ? <Skeleton height={320} /> : <Bar data={barData} />}
             </div>
           </div>
 
           <div className="bg-white p-6 rounded-lg shadow flex-1 h-[420px] flex flex-col items-center">
             <h2 className="text-xl font-bold mb-4">Data Distribution</h2>
+
             <div className="w-[350px] h-[350px]">
-              <Pie
-                data={pieData}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      position: "top",
+              {loading ? (
+                <Skeleton height={330} width={330} circle />
+              ) : (
+                <Pie
+                  data={pieData}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: "top",
+                      },
                     },
-                  },
-                }}
-              />
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
