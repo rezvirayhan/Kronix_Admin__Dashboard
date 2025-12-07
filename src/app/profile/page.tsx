@@ -38,7 +38,7 @@ const ProfilePage = () => {
       try {
         setLoading(true);
         const res = await axios.get(
-          `https://kronix-back-end-kappa.vercel.app/api/users/${userId}`
+          `https://kronix-back-end.vercel.app/api/users/${userId}`
         );
         setUser(res.data);
         setFormData({ name: res.data.name, email: res.data.email });
@@ -63,7 +63,7 @@ const ProfilePage = () => {
   const handleUpdate = async () => {
     try {
       const res = await axios.put(
-        `https://kronix-back-end-kappa.vercel.app/api/users/${userId}`,
+        `https://kronix-back-end.vercel.app/api/users/${userId}`,
         formData
       );
       setUser(res.data.user);

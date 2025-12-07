@@ -42,7 +42,7 @@ const EmailsPage = () => {
     try {
       setLoading(true);
       const res = await axios.get(
-        "https://kronix-back-end-kappa.vercel.app/api/emails",
+        "https://kronix-back-end.vercel.app/api/emails",
         {
           params: { page, limit, search, sortField, sortOrder },
         }
@@ -65,7 +65,7 @@ const EmailsPage = () => {
 
     try {
       await axios.delete(
-        `https://kronix-back-end-kappa.vercel.app/api/emails/${row._id}`
+        `https://kronix-back-end.vercel.app/api/emails/${row._id}`
       );
       fetchEmails();
     } catch (err) {

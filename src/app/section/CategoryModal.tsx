@@ -30,7 +30,7 @@ const categories = [
   "Wireframes",
 ];
 
-const API = "https://kronix-back-end-kappa.vercel.app/api/services";
+const API = "https://kronix-back-end.vercel.app/api/services";
 
 const CategoryModal: React.FC<Props> = ({
   isOpen,

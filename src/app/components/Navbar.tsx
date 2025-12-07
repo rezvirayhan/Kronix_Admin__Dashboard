@@ -34,7 +34,7 @@ const Navbar = () => {
     const fetchUser = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/users/${userId}`
+          `https://kronix-back-end.vercel.app/api/users/${userId}`
         );
         setUser(res.data);
       } catch (err) {

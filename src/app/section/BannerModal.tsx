@@ -49,14 +49,11 @@ const BannerModal: React.FC<Props> = ({ isOpen, onClose, banner, onSaved }) => {
     try {
       if (banner?._id) {
         await axios.put(
-          `https://kronix-back-end-kappa.vercel.app/api/hero/${banner._id}`,
+          `https://kronix-back-end.vercel.app/api/hero/${banner._id}`,
           form
         );
       } else {
-        await axios.post(
-          "https://kronix-back-end-kappa.vercel.app/api/hero",
-          form
-        );
+        await axios.post("https://kronix-back-end.vercel.app/api/hero", form);
       }
       setForm({
         mainTitle: "",

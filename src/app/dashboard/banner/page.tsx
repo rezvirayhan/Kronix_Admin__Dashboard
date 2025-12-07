@@ -44,7 +44,7 @@ const BannerDashboard = () => {
       setLoading(true);
 
       const res = await axios.get(
-        "https://kronix-back-end-kappa.vercel.app/api/hero",
+        "https://kronix-back-end.vercel.app/api/hero",
         {
           params: { page, limit, search, sortField, sortOrder },
         }
