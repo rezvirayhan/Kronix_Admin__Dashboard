@@ -37,7 +37,7 @@ const PricingDashboard = () => {
       setLoading(true);
 
       const res = await axios.get(
-        "https://kronix-back-end-kappa.vercel.app/api/pricing",
+        "https://kronix-back-end.vercel.app/api/pricing",
         {
           params: { page, limit, search, sortField, sortOrder },
         }
@@ -70,7 +70,7 @@ const PricingDashboard = () => {
 
     try {
       await axios.delete(
-        `https://kronix-back-end-kappa.vercel.app/api/pricing/${deletePricing._id}`
+        `https://kronix-back-end.vercel.app/api/pricing/${deletePricing._id}`
       );
       toast.success(
         `Pricing "${deletePricing.priceTitle}" deleted successfully!`,

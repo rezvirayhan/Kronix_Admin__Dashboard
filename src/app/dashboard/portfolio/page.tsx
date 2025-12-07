@@ -31,7 +31,7 @@ const PortfolioDashboard = () => {
   const [deleteImage, setDeleteImage] = useState<IPortfolio | null>(null);
 
   const [loading, setLoading] = useState(true);
-  const API_URL = "https://kronix-back-end-kappa.vercel.app/api/portfolio";
+  const API_URL = "https://kronix-back-end.vercel.app/api/portfolio";
   const fetchImages = async () => {
     try {
       setLoading(true);

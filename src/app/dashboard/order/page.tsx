@@ -35,7 +35,7 @@ const NotificationDashboard = () => {
       setLoading(true);
 
       const res = await axios.get(
-        "https://kronix-back-end-kappa.vercel.app/api/order",
+        "https://kronix-back-end.vercel.app/api/order",
         {
           params: { page, limit, search, sortField, sortOrder },
         }
@@ -70,7 +70,7 @@ const NotificationDashboard = () => {
 
     try {
       await axios.delete(
-        `https://kronix-back-end-kappa.vercel.app/api/order/${row._id}`
+        `https://kronix-back-end.vercel.app/api/order/${row._id}`
       );
       fetchNotifications();
     } catch (err) {

@@ -16,7 +16,7 @@ import { toast } from "react-toastify";
 import DeleteingModal from "@/app/components/DeleteingModal";
 import HeroModal from "@/app/section/HeroModal";
 
-const API_URL = "https://kronix-back-end-kappa.vercel.app/api/process";
+const API_URL = "https://kronix-back-end.vercel.app/api/process";
 
 export interface HeroStep {
   title: string;

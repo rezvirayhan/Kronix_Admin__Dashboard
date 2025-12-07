@@ -15,7 +15,7 @@ interface Props {
   onSaved: () => void;
 }
 
-const API_URL = "https://kronix-back-end-kappa.vercel.app/api/portfolio";
+const API_URL = "https://kronix-back-end.vercel.app/api/portfolio";
 
 console.log(API_URL);
 

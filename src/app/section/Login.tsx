@@ -5,13 +5,13 @@ import { IMAGES } from "@/utils/images";
 import InputField from "@/app/components/InputFilde";
 import Link from "next/link";
 import { toast } from "react-toastify";
-
-const Login = ({ onLogin }: { onLogin: () => void }) => {
+import { useRouter } from "next/navigation";
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +20,7 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
 
     try {
       const res = await fetch(
-        "https://kronix-back-end-kappa.vercel.app/api/users/login",
+        "https://kronix-back-end.vercel.app/api/users/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -36,18 +36,13 @@ const Login = ({ onLogin }: { onLogin: () => void }) => {
           position: "bottom-right",
         });
       } else {
-        if (data.token) localStorage.setItem("authToken", data.token);
-        toast.success("Login successful", {
+        localStorage.setItem("emailForOtp", email);
+        toast.success("OTP sent to your email", {
           position: "bottom-right",
           autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
         });
 
-        onLogin();
+        router.push("/verify-otp");
       }
     } catch (err) {
       setError("Something went wrong");
