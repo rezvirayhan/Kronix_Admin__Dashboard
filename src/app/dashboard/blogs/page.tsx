@@ -23,7 +23,7 @@ export interface IBlog {
   createdAt?: string;
 }
 
-const BlogDashboard = () => {
+const BlogDashboardPages = () => {
   const [blogs, setBlogs] = useState<IBlog[]>([]);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
@@ -194,4 +194,4 @@ const BlogDashboard = () => {
   );
 };
 
-export default BlogDashboard;
+export default BlogDashboardPages;
