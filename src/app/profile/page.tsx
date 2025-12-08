@@ -107,12 +107,11 @@ const ProfilePage = () => {
                 <h2 className="text-[#6b7280]">Name</h2>
                 {loading ? <Skeleton width={120} /> : <h2>{user.name}</h2>}
               </div>
-              <div className="mt-4 lg:mt-0">
+              <div className="mt-4 lg:mt-0 lg:ml-60">
                 <h2 className="text-[#6b7280]">Email</h2>
                 {loading ? <Skeleton width={200} /> : <h2>{user.email}</h2>}
               </div>
             </div>
-
             <div className="flex justify-center mt-14">
               {loading ? (
                 <Skeleton width={120} height={35} />
