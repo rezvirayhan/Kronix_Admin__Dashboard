@@ -11,6 +11,7 @@ import ReusableSort from "@/app/components/ReusableSort";
 import HeaderCard from "@/app/components/HeaderCard";
 import { MdNotifications } from "react-icons/md";
 import { IColumn } from "@/app/types/IColumn";
+import { FaCartArrowDown } from "react-icons/fa";
 
 interface INotification {
   _id: string;
@@ -147,9 +148,9 @@ const NotificationDashboard = () => {
       <div className="min-h-screen p-6 max-w-[1350px] mx-auto">
         <HeaderCard
           icon={
-            <MdNotifications className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
+            <FaCartArrowDown className="text-6xl p-2 bg-[#00b0ea] text-white rounded-lg" />
           }
-          title="Notifications"
+          title="Order"
         />
 
         <div className="mb-4 flex justify-end">
